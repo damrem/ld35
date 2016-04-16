@@ -192,63 +192,66 @@ class Main extends Sprite
 		
 		var currentEvent = eventHistory[eventHistory.length - 1];
 		
-		//var losingMen = (currentEvent.losingMen + vampireShape.losingMen) / 2;
-		//if (Rnd.chance(losingMen))
-		//{
-			crew += Random.int(currentEvent.maxLosingMen, currentEvent.maxGainingMen);
-			if (crew <= 0)
-			{
-				crew = 0;
-				gameOver();
-			}
-			crewChanged.dispatch();
-		//}
-		
-		//var gainingMen = (currentEvent.gainingMen + vampireShape.gainingMen) / 2;
-		//if (Rnd.chance(gainingMen))
-		//{
-			//crew += Random.int(1, currentEvent.maxLosingMen);
-			//crewChanged.dispatch();
-		//}
-		
-		var losingHealth = (currentEvent.losingHealth + vampireShape.losingHealth) / 2;
-		if (Rnd.chance(losingHealth))
+		if (Rnd.chance(vampireShape.losingMen))
 		{
-			health--;
-			healthChanged.dispatch();
-			if (health == 0)
-			{
-				gameOver();
-			}
+			crew += Random.int(-currentEvent.maxLosingMen, 0);
 		}
-		
-		var gainingHealth = (currentEvent.gainingHealth + vampireShape.gainingHealth) / 2;
-		if (Rnd.chance(gainingMen))
+		if (Rnd.chance(vampireShape.gainingMen))
 		{
-			if (health < 100)
-			{
-				health++;
-				healthChanged.dispatch();
-			}
+			crew += Random.int(0, currentEvent.maxGainingMen);
 		}
-		
-		var losingMoney = (currentEvent.losingMoney + vampireShape.losingMoney) / 2;
-		if (Rnd.chance(losingMoney))
+		if (crew <= 0)
 		{
-			money--;
-			moneyChanged.dispatch();
-			if (money == 0)
-			{
-				gameOver();
-			}
+			crew = 0;
+			//gameOver();
 		}
-		
-		var gainingMoney = (currentEvent.gainingMoney + vampireShape.gainingMoney) / 2;
-		if (Rnd.chance(gainingMen))
+		else if (crew > 30)
 		{
-			money++;
-			moneyChanged.dispatch();
+			crew = 30;
 		}
+		crewChanged.dispatch();
+	
+		
+		
+		if (Rnd.chance(vampireShape.losingHealth))
+		{
+			health+=Random.int(-currentEvent.maxLosingHealth, 0);			
+		}
+		if (Rnd.chance(vampireShape.gainingHealth))
+		{
+			health+=Random.int(0, currentEvent.maxGainingHealth);			
+		}
+		if (health <= 0)
+		{
+			health = 0;
+			gameOver();
+		}
+		else if (health > 100)
+		{
+			health = 100;
+		}
+		healthChanged.dispatch();
+	
+		
+		
+		
+		if (Rnd.chance(vampireShape.losingMoney))
+		{
+			money += Random.int( -currentEvent.maxLosingMoney, 0);
+		}
+		if (Rnd.chance(vampireShape.gainingMoney))
+		{
+			money += Random.int( 0, currentEvent.maxGainingMoney);
+		}
+		if (money <= 0)
+		{
+			money = 0;
+			gameOver();
+		}
+		moneyChanged.dispatch();
+		
+		
+		
 		
 		nextEvent();
 		
@@ -256,7 +259,7 @@ class Main extends Sprite
 	
 	function gameOver() 
 	{
-		removeChildren(0, numChildren);
+		removeChildren(0, numChildren-1);
 	}
 
 }

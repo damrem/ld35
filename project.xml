@@ -18,6 +18,7 @@
 	<haxelib name="actuate" />
 	<haxelib name="msignal" />
 	<haxelib name="random" />
+	<haxelib name="polygonal-core" />
 	
 	<!-- assets -->
 	<icon path="assets/openfl.svg" />

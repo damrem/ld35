@@ -21,13 +21,16 @@
     <class path="C:\HaxeToolkit\haxe\lib\actuate\1,8,6" />
     <class path="C:\HaxeToolkit\haxe\lib\msignal\1,2,4" />
     <class path="C:\HaxeToolkit\haxe\lib\random\1,4,1\src" />
+    <class path="C:\HaxeToolkit\haxe\lib\polygonal-core\1,0,4" />
+    <class path="C:\HaxeToolkit\haxe\lib\polygonal-ds\1,4,1" />
+    <class path="C:\HaxeToolkit\haxe\lib\polygonal-printf\1,0,2-beta" />
     <class path="src" />
     <class path="C:\Users\Damien\workspace\openfl\extern" />
     <class path="bin\flash\haxe" />
   </classpaths>
   <!-- Build options -->
   <build>
-    <option directives="openfl=3.6.1&#xA;lime=2.9.1&#xA;actuate=1.8.6&#xA;msignal=1.2.4&#xA;random=1.4.1&#xA;openfl-next&#xA;tools=2.9.1&#xA;no-compilation&#xA;openfl-flash&#xA;web&#xA;display" />
+    <option directives="openfl=3.6.1&#xA;lime=2.9.1&#xA;actuate=1.8.6&#xA;msignal=1.2.4&#xA;random=1.4.1&#xA;polygonal-core=1.0.4&#xA;polygonal-ds=1.4.1&#xA;polygonal-printf=1.0.2-beta&#xA;openfl-next&#xA;tools=2.9.1&#xA;no-compilation&#xA;openfl-flash&#xA;web&#xA;display" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
     <option mainClass="ApplicationMain" />

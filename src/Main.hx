@@ -16,21 +16,19 @@ import src.GameEvent;
 class Main extends Sprite 
 {
 	var totalEventChances:Float;
-	var eventHistory:Array<GameEvent>;
+	var gameEventHistory:Array<AbstractGameEvent>;
 	var humanButton:openfl.display.Sprite;
 	var beastButton:openfl.display.Sprite;
 	var batButton:openfl.display.Sprite;
+	var gameEventFactory:GameEventFactory;
+	var currentEvent:AbstractGameEvent;
 	
 	public static var indicatorTextFormat:TextFormat;
 
 	public static var health:Int = 100;
 	public static var healthChanged:Signal0;
 	
-	public static var money:Int = 1000;
-	public static var moneyChanged:Signal0;
-	
-	public static var crew:Int = 10;
-	public static var crewChanged:Signal0;
+	public static var vampireShip:Ship;
 	
 	public static var eventDefs:Array<GameEvent>;
 	
@@ -42,11 +40,12 @@ class Main extends Sprite
 	{
 		super();
 		
+		gameEventFactory = new GameEventFactory();
+		indicatorTextFormat=new TextFormat(null, 12, 0xffffff);
+
 		healthChanged = new Signal0();
-		moneyChanged = new Signal0();
-		crewChanged = new Signal0();
 		
-		eventHistory = [];
+		gameEventHistory = [];
 		
 		humanShape = {
 			name: "Human Shape",
@@ -83,52 +82,49 @@ class Main extends Sprite
 		eventDefs.push( {
 			name: "Merchant Ship",
 			chance:1,
-			//losingMen:0.25,
 			maxLosingMen:1,
-			//gainingMen:0.25,
 			maxGainingMen:1,
-			//losingMoney:0,
 			maxLosingMoney:0,
-			//gainingMoney:0.75,
 			maxGainingMoney:2500,
-			//losingHealth:1 / 3,
 			maxLosingHealth:5,
-			//gainingHealth:0.25,
-			maxGainingHealth:5
+			maxGainingHealth:5,
+			isShip: true
 		});
 		
 		eventDefs.push( {
 			name: "Privateer Vessel",
 			chance:0.5,
-			//losingMen:0.75,
 			maxLosingMen:3,
-			//gainingMen:0.75,
 			maxGainingMen:3,
-			//losingMoney:0.1,
 			maxLosingMoney:100,
-			//gainingMoney:0.25,
 			maxGainingMoney:500,
-			//losingHealth:0.5,
 			maxLosingHealth:25,
-			//gainingHealth:0.1,
-			maxGainingHealth:5
+			maxGainingHealth:5,
+			isShip: true
 		});
 		
 		eventDefs.push( {
 			name: "Pirate Boat",
 			chance:0.5,
-			//losingMen:0.75,
 			maxLosingMen:5,
-			//gainingMen:0.875,
 			maxGainingMen:5,
-			//losingMoney:0.25,
 			maxLosingMoney:500,
-			//gainingMoney:0.1,
 			maxGainingMoney:500,
-			//losingHealth:0.5,
 			maxLosingHealth:15,
-			//gainingHealth:0.1,
-			maxGainingHealth:10
+			maxGainingHealth:10,
+			isShip: true
+		});
+		
+		eventDefs.push( {
+			name: "Storm",
+			chance:0.5,
+			maxLosingMen:5,
+			maxGainingMen:5,
+			maxLosingMoney:0,
+			maxGainingMoney:0,
+			maxLosingHealth:5,
+			maxGainingHealth:0,
+			isShip: true
 		});
 		
 		
@@ -141,9 +137,9 @@ class Main extends Sprite
 		// Assets:
 		// openfl.Assets.getBitmapData("img/assetname.jpg");
 		
+		
 		nextEvent();
 		
-		indicatorTextFormat=new TextFormat(null, 12, 0xffffff);
 		
 		humanButton = new VampireShapeButton(humanShape);
 		humanButton.x = 10;
@@ -162,6 +158,7 @@ class Main extends Sprite
 		
 		
 		
+		vampireShip = new Ship("", "", 10, 1000, 30);
 		(addChild(new HealthIndicator())).x = 10;
 		(addChild(new CrewIndicator())).x=100;
 		(addChild(new MoneyIndicator())).x=190;
@@ -180,9 +177,19 @@ class Main extends Sprite
 	function nextEvent() 
 	{
 		trace("nextEvent");
-		var event:GameEvent = eventDefs[Std.random(eventDefs.length)];
-		eventHistory.push(event);
-		trace(event.name);
+		
+		if (gameEventHistory.length > 0)
+		{
+			currentEvent = gameEventHistory[gameEventHistory.length - 1];
+			removeChild(currentEvent);
+		}
+		
+		currentEvent = gameEventFactory.createGameEvent();// eventDefs[Std.random(eventDefs.length)];
+		currentEvent.x = currentEvent.y = 100;
+		gameEventHistory.push(currentEvent);
+		addChild(currentEvent);
+		
+		
 	}
 	
 	function resolveCurrentEvent(evt:MouseEvent=null)
@@ -190,26 +197,18 @@ class Main extends Sprite
 		trace("resolveCurrent");
 		var vampireShape:VampireShape = cast(evt.currentTarget, VampireShapeButton).vampireShape;
 		
-		var currentEvent = eventHistory[eventHistory.length - 1];
+		currentEvent.resolve(vampireShape);
 		
-		if (Rnd.chance(vampireShape.losingMen))
+		/*if (Rnd.chance(vampireShape.losingMen))
 		{
-			crew += Random.int(-currentEvent.maxLosingMen, 0);
+			vampireShip.crew += Random.int(-currentEvent.maxLosingMen, 0);
 		}
 		if (Rnd.chance(vampireShape.gainingMen))
 		{
-			crew += Random.int(0, currentEvent.maxGainingMen);
+			vampireShip.crew += Random.int(0, currentEvent.maxGainingMen);
 		}
-		if (crew <= 0)
-		{
-			crew = 0;
-			//gameOver();
-		}
-		else if (crew > 30)
-		{
-			crew = 30;
-		}
-		crewChanged.dispatch();
+		
+		
 	
 		
 		
@@ -237,19 +236,18 @@ class Main extends Sprite
 		
 		if (Rnd.chance(vampireShape.losingMoney))
 		{
-			money += Random.int( -currentEvent.maxLosingMoney, 0);
+			vampireShip.gold += Random.int( -currentEvent.maxLosingMoney, 0);
 		}
 		if (Rnd.chance(vampireShape.gainingMoney))
 		{
-			money += Random.int( 0, currentEvent.maxGainingMoney);
+			vampireShip.gold += Random.int( 0, currentEvent.maxGainingMoney);
 		}
-		if (money <= 0)
+		if (vampireShip.gold <= 0)
 		{
-			money = 0;
 			gameOver();
 		}
-		moneyChanged.dispatch();
 		
+		*/
 		
 		
 		
@@ -261,5 +259,7 @@ class Main extends Sprite
 	{
 		removeChildren(0, numChildren-1);
 	}
-
+	
+	
+	
 }

@@ -18,10 +18,10 @@ class CrewIndicator extends Sprite
 		txt.selectable = false;
 		txt.defaultTextFormat = Main.indicatorTextFormat;
 		addChild(txt);
-		txt.text = ""+Main.crew;
-		Main.crewChanged.add(function()
+		txt.text = ""+Main.vampireShip.crew;
+		Main.vampireShip.crewChanged.add(function(crew)
 		{
-			txt.text = ""+Main.crew;
+			txt.text = ""+crew;
 		});
 	}
 	

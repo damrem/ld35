@@ -18,4 +18,6 @@ typedef GameEvent =
 	
 	var maxLosingHealth:Int;
 	var maxGainingHealth:Int;
+	
+	@:optional var isShip:Bool;
 }

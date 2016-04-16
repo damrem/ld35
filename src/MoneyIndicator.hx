@@ -17,10 +17,10 @@ class MoneyIndicator extends Sprite
 		txt.selectable = false;
 		txt.defaultTextFormat = Main.indicatorTextFormat;
 		addChild(txt);
-		txt.text = ""+Main.money;
-		Main.moneyChanged.add(function()
+		txt.text = ""+Main.Main.vampireShip.gold;
+		Main.vampireShip.goldChanged.add(function(gold)
 		{
-			txt.text = ""+Main.money;
+			txt.text = ""+gold;
 		});
 	}
 	

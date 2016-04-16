@@ -17,10 +17,10 @@ class HealthIndicator extends Sprite
 		txt.selectable = false;
 		txt.defaultTextFormat = Main.indicatorTextFormat;
 		addChild(txt);
-		txt.text = ""+Main.health;
-		Main.healthChanged.add(function()
+		txt.text = ""+Main.blackula.health;
+		Main.blackula.healthChanged.add(function(health, isDead)
 		{
-			txt.text = ""+Main.health;
+			txt.text = ""+health;
 		});
 	}
 	

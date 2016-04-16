@@ -62,28 +62,48 @@ class Ship extends AbstractGameEvent
 		if (vampireShape.name == "Feral Shape")
 		{
 			bonusedCrew += 5;
+			trace("crew bonus +5");
 		}
 		else if (vampireShape.name == "Bat Shape")
 		{
 			bonusedCrew *= 1.5;
+			trace("crew bonus +50%");
 		}
 		
 		var victoryRatio = bonusedCrew / (bonusedCrew + crew);
+		trace("victoryRatio", victoryRatio);
 		var victory = Rnd.chance(victoryRatio);
 		
 		if (victory)
 		{
-			Main.vampireShip.gold += Std.int(gold * victoryRatio);
+			trace("victory");
+			var gainedGold = Std.int(gold * victoryRatio);
+			Main.vampireShip.gold += gainedGold;
+			trace("gained " + gainedGold+" gold");
+			
 			if (vampireShape.name == "Human Shape")
 			{
-				Main.vampireShip.crew += Std.int(crew * 0.25);
-				Main.
+				var addedCrew = Std.int(crew * 0.25);
+				Main.vampireShip.crew += addedCrew;
+				trace("recruited " + addedCrew + " crew members");
 			}
 		}
 		else
 		{
-			Main.vampireShip.gold = Std.int(Main.vampireShip.gold/2);
-			Main.vampireShip.crew = Std.int(Main.vampireShip.crew * victoryRatio);
+			trace("defeat");
+			
+			var lostGold = Std.int(Main.vampireShip.gold * (1 - victoryRatio)/3);
+			Main.vampireShip.gold -= lostGold;
+			trace("lost " + lostGold + "gold");
+			
+			var deadCrew = Std.int(Main.vampireShip.crew * (1 - victoryRatio)/3);
+			Main.vampireShip.crew -= deadCrew;
+			trace(deadCrew + " crew member are dead");
+
+			var damage = Std.int(victoryRatio * 10);
+			Main.blackula.health -= damage;
+			trace("took " + damage+" damage");
+
 		}
 		
 		

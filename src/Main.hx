@@ -22,12 +22,10 @@ class Main extends Sprite
 	var batButton:openfl.display.Sprite;
 	var gameEventFactory:GameEventFactory;
 	var currentEvent:AbstractGameEvent;
+	public static var blackula:Blackula;
 	
 	public static var indicatorTextFormat:TextFormat;
 
-	public static var health:Int = 100;
-	public static var healthChanged:Signal0;
-	
 	public static var vampireShip:Ship;
 	
 	public static var eventDefs:Array<GameEvent>;
@@ -40,11 +38,18 @@ class Main extends Sprite
 	{
 		super();
 		
+		blackula = new Blackula();
+		blackula.healthChanged.add(function(health, isDead)
+		{
+			if (isDead)
+			{
+				gameOver();
+			}
+		});
+		
 		gameEventFactory = new GameEventFactory();
 		indicatorTextFormat=new TextFormat(null, 12, 0xffffff);
 
-		healthChanged = new Signal0();
-		
 		gameEventHistory = [];
 		
 		humanShape = {
@@ -141,21 +146,24 @@ class Main extends Sprite
 		nextEvent();
 		
 		
+		var shapeButtonsContainer = new Sprite();
+		shapeButtonsContainer.y = 400;
+		addChild(shapeButtonsContainer);
+		
+		
 		humanButton = new VampireShapeButton(humanShape);
-		humanButton.x = 10;
-		humanButton.y = 200;
-		addChild(humanButton);
+		humanButton.x = 0;
+		shapeButtonsContainer.addChild(humanButton);
 		
 		beastButton = new VampireShapeButton(beastShape);
 		beastButton.x = 200;
-		beastButton.y = 200;
-		addChild(beastButton);
+		shapeButtonsContainer.addChild(beastButton);
 		
 		batButton = new VampireShapeButton(batShape);
-		batButton.x = 390;
-		batButton.y = 200;
-		addChild(batButton);
+		batButton.x = 400;
+		shapeButtonsContainer.addChild(batButton);
 		
+		shapeButtonsContainer.x = (Lib.current.stage.stageWidth - shapeButtonsContainer.width) / 2;
 		
 		
 		vampireShip = new Ship("", "", 10, 1000, 30);

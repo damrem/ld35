@@ -1,4 +1,6 @@
 package;
+import openfl.Assets;
+import openfl.display.Bitmap;
 import openfl.display.Sprite;
 import openfl.text.TextField;
 
@@ -14,14 +16,20 @@ class HealthIndicator extends Sprite
 	{
 		super();
 		txt = new TextField();
+		txt.embedFonts = true;
 		txt.selectable = false;
-		txt.defaultTextFormat = Main.indicatorTextFormat;
+		txt.defaultTextFormat = Main.ftLarge;
 		addChild(txt);
-		txt.text = ""+Main.blackula.health;
+		txt.y = 8;
+		txt.text = "" + Main.blackula.health;
+		txt.setTextFormat(Main.ftLarge);
 		Main.blackula.healthChanged.add(function(health, isDead)
 		{
 			txt.text = ""+health;
 		});
+		
+		var heart=addChild(new Bitmap(Assets.getBitmapData("img/heart.png")));
+		txt.x = heart.width;
 	}
 	
 	

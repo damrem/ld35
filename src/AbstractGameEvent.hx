@@ -1,6 +1,7 @@
 package;
 import openfl.display.Sprite;
 import openfl.text.TextField;
+import openfl.text.TextFieldAutoSize;
 
 /**
  * ...
@@ -20,20 +21,26 @@ class AbstractGameEvent extends Sprite
 		this.type = type;
 		this.eventName = eventName;
 		
+		nameTxt = new TextField();
+		nameTxt.autoSize = TextFieldAutoSize.LEFT;
+		nameTxt.embedFonts = true;
+		nameTxt.defaultTextFormat = Main.ftLarge;
+		nameTxt.text = eventName;
+		addChild(nameTxt);
+		
 		typeTxt = new TextField();
-		typeTxt.defaultTextFormat = Main.indicatorTextFormat;
+		typeTxt .embedFonts = true;
+		typeTxt.autoSize = TextFieldAutoSize.LEFT;
+		typeTxt.defaultTextFormat = Main.ftSmall;
 		typeTxt.text = type;
 		addChild(typeTxt);
 		typeTxt.y = 20;
 		
-		nameTxt = new TextField();
-		nameTxt.defaultTextFormat = Main.indicatorTextFormat;
-		nameTxt.text = eventName;
-		addChild(nameTxt);
+		
 		
 	}
 	
-	public function resolve(vampireShape:VampireShape)
+	public function resolve(vampireShape:BlackulaShape)
 	{
 		
 	}

@@ -1,8 +1,11 @@
 package;
 import de.polygonal.core.math.Mathematics;
+import flash.display.BitmapData;
 import hxlpers.Rnd;
 import msignal.Signal.Signal1;
-
+import openfl.Assets;
+import openfl.display.Bitmap;
+using hxlpers.display.BitmapDataSF;
 /**
  * @author damrem
  */
@@ -28,6 +31,18 @@ class Ship extends AbstractGameEvent
 		this.crew = crew;
 		
 		
+		addChild(new Bitmap(Assets.getBitmapData("img/sea.png")));
+		var stars = new BitmapData(512, 120, true, 0);
+		stars.simpleNoise(0.005, true, true);
+		(addChild(new Bitmap(stars))).alpha=0.33;
+		
+		var ship = new Bitmap(Assets.getBitmapData("img/ship.png"));
+		var scale = (0.75 + Math.random() * 0.25);
+		ship.scaleX = scale * (Rnd.chance()?1: -1);
+		ship.scaleY = scale;
+		ship.x = 112 + Math.random()*(256);
+		ship.y = 48 + Std.random(12);
+		addChild(ship);
 	}
 	
 	function get_crew():Int 
@@ -55,7 +70,7 @@ class Ship extends AbstractGameEvent
 	}
 	
 	
-	override public function resolve(vampireShape:VampireShape)
+	override public function resolve(vampireShape:BlackulaShape)
 	{
 		var bonusedCrew:Float = Main.vampireShip.crew;
 		

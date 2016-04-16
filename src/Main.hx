@@ -2,41 +2,49 @@ package;
 
 import hxlpers.Rnd;
 import msignal.Signal;
+import openfl.Assets;
 import openfl.display.Sprite;
 import openfl.events.MouseEvent;
 import openfl.Lib;
+import openfl.text.Font;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
 import src.GameEvent;
-
+//@:font("assets/fonts/PxPlus_AmstradPC1512.ttf") class DefaultFont extends Font { }
 /**
  * ...
  * @author damrem
  */
 class Main extends Sprite 
 {
+	
+	
+	
 	var totalEventChances:Float;
 	var gameEventHistory:Array<AbstractGameEvent>;
-	var humanButton:openfl.display.Sprite;
+	var vampireButton:openfl.display.Sprite;
 	var beastButton:openfl.display.Sprite;
-	var batButton:openfl.display.Sprite;
+	var swarmButton:openfl.display.Sprite;
 	var gameEventFactory:GameEventFactory;
 	var currentEvent:AbstractGameEvent;
 	public static var blackula:Blackula;
 	
-	public static var indicatorTextFormat:TextFormat;
+	public static var ftLarge:TextFormat;
+	public static var ftSmall:TextFormat;
 
 	public static var vampireShip:Ship;
 	
 	public static var eventDefs:Array<GameEvent>;
 	
-	public static var humanShape:VampireShape;
-	public static var beastShape:VampireShape;
-	public static var batShape:VampireShape;
+	public static var vampireShape:BlackulaShape;
+	public static var beastShape:BlackulaShape;
+	public static var batShape:BlackulaShape;
 	
 	public function new() 
 	{
 		super();
+		
+		//Font.registerFont (DefaultFont);
 		
 		blackula = new Blackula();
 		blackula.healthChanged.add(function(health, isDead)
@@ -48,12 +56,14 @@ class Main extends Sprite
 		});
 		
 		gameEventFactory = new GameEventFactory();
-		indicatorTextFormat=new TextFormat(null, 12, 0xffffff);
+		ftLarge = new TextFormat(Assets.getFont("fonts/PxPlus_AmstradPC1512.ttf").fontName, 16, 0xffffff);
+		ftSmall =new TextFormat(Assets.getFont("fonts/PxPlus_AmstradPC1512.ttf").fontName, 8, 0xffffff);
 
 		gameEventHistory = [];
 		
-		humanShape = {
-			name: "Human Shape",
+		vampireShape = {
+			name: "Vampire Shape\n(Recruitment bonus)",
+			bmp:"img/human.png",
 			losingMen:0.5,
 			gainingMen:0.5,
 			losingMoney:0.5,
@@ -63,7 +73,8 @@ class Main extends Sprite
 		};
 		
 		beastShape = {
-			name: "Feral Shape",
+			name: "Feral Shape\n(Combat bonus)",
+			bmp:"img/shark.png",
 			losingMen:0.25,
 			gainingMen:0.25,
 			losingMoney:0.25,
@@ -73,7 +84,8 @@ class Main extends Sprite
 		};
 		
 		batShape = {
-			name: "Flying Shape",
+			name: "Swarm Shape\n(Plunder bonus)",
+			bmp:"img/rats.png",
 			losingMen:0.75,
 			gainingMen:0.0,
 			losingMoney:0.75,
@@ -147,38 +159,56 @@ class Main extends Sprite
 		
 		
 		var shapeButtonsContainer = new Sprite();
-		shapeButtonsContainer.y = 400;
+		shapeButtonsContainer.y = 232;
 		addChild(shapeButtonsContainer);
 		
 		
-		humanButton = new VampireShapeButton(humanShape);
-		humanButton.x = 0;
-		shapeButtonsContainer.addChild(humanButton);
+		vampireButton = new BlackulaShapeButton(vampireShape);
+		vampireButton.x = 0;
+		shapeButtonsContainer.addChild(vampireButton);
 		
-		beastButton = new VampireShapeButton(beastShape);
-		beastButton.x = 200;
+		beastButton = new BlackulaShapeButton(beastShape);
+		beastButton.x = 176;
 		shapeButtonsContainer.addChild(beastButton);
 		
-		batButton = new VampireShapeButton(batShape);
-		batButton.x = 400;
-		shapeButtonsContainer.addChild(batButton);
+		swarmButton = new BlackulaShapeButton(batShape);
+		swarmButton.x = 176*2;
+		shapeButtonsContainer.addChild(swarmButton);
+		
+		vampireButton.addText();
+		beastButton.addText();
+		swarmButton.addText();
 		
 		shapeButtonsContainer.x = (Lib.current.stage.stageWidth - shapeButtonsContainer.width) / 2;
 		
 		
 		vampireShip = new Ship("", "", 10, 1000, 30);
-		(addChild(new HealthIndicator())).x = 10;
-		(addChild(new CrewIndicator())).x=100;
-		(addChild(new MoneyIndicator())).x=190;
+		
+		var indicatorsContainer = new Sprite();
+		addChild(indicatorsContainer);
+		indicatorsContainer.y = 404;
+		
+		
+		var crewIndicator = new CrewIndicator();
+		indicatorsContainer .addChild(crewIndicator);
+		crewIndicator.x = 20;
+		
+		var healthIndicator = new HealthIndicator();
+		indicatorsContainer .addChild(healthIndicator);
+		healthIndicator.x = (Lib.current.stage.stageWidth - healthIndicator.width) / 2;
+		
+		var moneyIndicator = new MoneyIndicator();
+		indicatorsContainer .addChild(moneyIndicator);
+		moneyIndicator.x = Lib.current.stage.stageWidth - crewIndicator.width - 20;
 		
 		resume();
 	}
 	
 	function resume()
 	{
-		humanButton.addEventListener(MouseEvent.CLICK, resolveCurrentEvent);
+		vampireButton.addEventListener(MouseEvent.CLICK, resolveCurrentEvent);
 		beastButton.addEventListener(MouseEvent.CLICK, resolveCurrentEvent);
-		batButton.addEventListener(MouseEvent.CLICK, resolveCurrentEvent);
+		swarmButton.addEventListener(MouseEvent.CLICK, resolveCurrentEvent);
 	}
 	
 	
@@ -193,7 +223,8 @@ class Main extends Sprite
 		}
 		
 		currentEvent = gameEventFactory.createGameEvent();// eventDefs[Std.random(eventDefs.length)];
-		currentEvent.x = currentEvent.y = 100;
+		currentEvent.x = 20;
+		currentEvent.y = 20;
 		gameEventHistory.push(currentEvent);
 		addChild(currentEvent);
 		
@@ -203,9 +234,9 @@ class Main extends Sprite
 	function resolveCurrentEvent(evt:MouseEvent=null)
 	{
 		trace("resolveCurrent");
-		var vampireShape:VampireShape = cast(evt.currentTarget, VampireShapeButton).vampireShape;
+		var selectedShape:BlackulaShape = cast(evt.currentTarget, BlackulaShapeButton).blackulaShape;
 		
-		currentEvent.resolve(vampireShape);
+		currentEvent.resolve(selectedShape);
 		
 		/*if (Rnd.chance(vampireShape.losingMen))
 		{

@@ -4,9 +4,11 @@ package;
  * @author damrem
  */
 
-typedef VampireShape =
+typedef BlackulaShape =
 {
 	var name:String;
+	
+	var bmp:String;
 	
 	var losingMen:Float;
 	var gainingMen:Float;

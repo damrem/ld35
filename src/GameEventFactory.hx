@@ -98,10 +98,16 @@ class GameEventFactory
 			"Special",
 			"Not-so-fast",
 			"Villain",
-			"Heroic"
+			"Heroic",
+			"Skunky",
+			"Spooky"
 			
 		];
 		var names = [
+			"Mermaid",
+			"Harpy",
+			"Siren",
+			"Ghost",
 			"Dog",
 			"European",
 			"French",

@@ -47,6 +47,26 @@ class Main extends Sprite
 	{
 		super();
 		
+		ftLarge = new TextFormat(Assets.getFont("fonts/minya nouvelle bd.ttf").fontName, 19, 0xffffff);
+		ftHuge = new TextFormat(Assets.getFont("fonts/minya nouvelle bd.ttf").fontName, 24, 0xffffff);
+		ftSmall =new TextFormat(Assets.getFont("fonts/minya nouvelle rg.ttf").fontName, 14, 0xffffff);
+
+		
+		
+		var intro = new IntroScreen();
+		addChild(intro);
+		intro.restarted.add(restart);
+		
+		//restart();
+		
+		
+		//gameOver();
+		
+	}
+	
+	function restart() 
+	{
+		removeChildren();
 		
 		fullZone = new Sprite();
 		fullZone.rect(Lib.current.stage.stageWidth, Lib.current.stage.stageHeight, 0);
@@ -66,10 +86,6 @@ class Main extends Sprite
 		});
 		
 		gameEventFactory = new GameEventFactory();
-		ftLarge = new TextFormat(Assets.getFont("fonts/minya nouvelle bd.ttf").fontName, 19, 0xffffff);
-		ftHuge = new TextFormat(Assets.getFont("fonts/minya nouvelle bd.ttf").fontName, 24, 0xffffff);
-		ftSmall =new TextFormat(Assets.getFont("fonts/minya nouvelle rg.ttf").fontName, 14, 0xffffff);
-
 		gameEventHistory = [];
 		
 		vampireForm = {
@@ -236,7 +252,6 @@ class Main extends Sprite
 		
 		addChild(fullZone);
 		nextEvent();
-		
 	}
 	
 	function resume()
@@ -346,8 +361,15 @@ class Main extends Sprite
 	
 	function gameOver() 
 	{
-		removeChildren(0, numChildren-1);
+		trace("gameOver");
+		removeChildren(0, numChildren - 1);
+		var go = new GameOverScreen();
+		addChild(go);
+		go.restarted.add(restart);
+		trace(go.parent, go.stage);
 	}
+	
+	
 	
 	
 	

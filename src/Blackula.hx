@@ -12,7 +12,7 @@ class Blackula
 	var _health:Int = 100;
 	public var health(get, set):Int;
 	public var healthChanged:Signal1<Int>;
-	var maxHealth:Int = 100;
+	public var maxHealth:Int = 100;
 
 	public function new() 
 	{

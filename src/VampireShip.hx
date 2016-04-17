@@ -13,7 +13,7 @@ using hxlpers.display.BitmapDataSF;
 
 class VampireShip
 {
-	var maxCrew:Int;
+	public var maxCrew:Int;
 	var _crew:Int;
 	public var crew(get, set):Int;
 	public var crewChanged:Signal1<Int>;
@@ -52,6 +52,10 @@ class VampireShip
 	function set_gold(value:Int):Int 
 	{
 		_gold = value;
+		if (_gold < 0)
+		{
+			_gold = 0;
+		}
 		goldChanged.dispatch(_gold);
 		return _gold;
 	}

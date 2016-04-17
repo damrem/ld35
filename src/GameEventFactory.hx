@@ -23,7 +23,7 @@ class GameEventFactory
 	{
 		if(Rnd.chance(1))
 		{
-			return new ShipGameEvent(shipTypes[Std.random(shipTypes.length)], createShipName(), Random.int(5, 40), Random.int(0, 2500));
+			return new ShipGameEvent(shipTypes[Std.random(shipTypes.length)], createShipName(), Random.int(5, Math.ceil(Main.gameEventHistory.length/5)*5), Random.int(0, 2500));
 		}
 		else
 		{
@@ -56,10 +56,70 @@ class GameEventFactory
 			"Touchy",
 			"So 17th",
 			"Late",
-			"Modern"
+			"Modern",
+			"Angry",
+			"Sea",
+			"Grumpy",
+			"Winged",
+			"Tentacular",
+			"Ugly",
+			"Giant",
+			"Small",
+			"Fast",
+			"Heavy",
+			"Cute",
+			"Mean",
+			"Kind",
+			"Smelly",
+			"Bad",
+			"Invisible",
+			"Corrosive",
+			"Vicious",
+			"Nervous",
+			"Cocky",
+			"Valiant", 
+			"Happy",  
+			"Brave", 
+			"Epic", 
+			"Floppy", 
+			"Jealous",
+			"One Eye",
+			"Silent",
+			"White",
+			"Black",
+			"Green",
+			"Pinky",
+			"Punky",
+			"Ambiguous",
+			"Shady",
+			"Sloppy",
+			"Thug",
+			"Greedy",
+			"Special",
+			"Not-so-fast",
+			"Villain",
+			"Heroic"
 			
 		];
 		var names = [
+			"Dog",
+			"European",
+			"French",
+			"Spanish",
+			"Conquistador",
+			"Bull",
+			"Killer",
+			"Thief",
+			"Sir",
+			"Lady",
+			"Father",
+			"Master",
+			"Liar",
+			"Glutton",
+			"Giant",
+			"Dwarf",
+			"Tentacle",
+			"Wing",
 			"Maria",
 			"Unicorn",
 			"Scallion",
@@ -106,7 +166,8 @@ class GameEventFactory
 			"Danny",
 			"Lad",
 			"Boy",
-			"Poney"
+			"Poney",
+			"Butcher"
 		];
 		
 		return "The " + prefixes[Std.random(prefixes.length)] + " " + names[Std.random(names.length)];

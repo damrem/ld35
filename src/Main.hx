@@ -20,7 +20,7 @@ class Main extends Sprite
 	
 	
 	var totalEventChances:Float;
-	var gameEventHistory:Array<AbstractGameEvent>;
+	public static var gameEventHistory:Array<AbstractGameEvent>;
 	var vampireButton:openfl.display.Sprite;
 	var beastButton:openfl.display.Sprite;
 	var swarmButton:openfl.display.Sprite;
@@ -47,7 +47,6 @@ class Main extends Sprite
 	{
 		super();
 		
-		//Font.registerFont (DefaultFont);
 		
 		fullZone = new Sprite();
 		fullZone.rect(Lib.current.stage.stageWidth, Lib.current.stage.stageHeight, 0);
@@ -76,7 +75,7 @@ class Main extends Sprite
 		vampireForm = {
 			formName: "Vampire Form",
 			type:Vampire,
-			bonus:"Increase your chance of converting enemy crew members into one of your pirate ghuls.",
+			bonus:"Increase yer chance of converting enemy crew members into one of yer pirate ghuls.",
 			bmp:"img/human.png",
 			losingMen:0.5,
 			gainingMen:0.5,
@@ -89,7 +88,7 @@ class Main extends Sprite
 		beastForm = {
 			formName: "Feral Form",
 			type:Feral,
-			bonus:"You shark face will throw fear into the heart of your opponents. Their meat won't be that tender but might regenerate your life.",
+			bonus:"Yer toothy face of yers will throw fear right into the heart of yer opponents. Their meat won't be that tender but might regenerate yer blood.",
 			bmp:"img/shark.png",
 			losingMen:0.25,
 			gainingMen:0.25,
@@ -172,8 +171,21 @@ class Main extends Sprite
 		// Assets:
 		// openfl.Assets.getBitmapData("img/assetname.jpg");
 		
-		vampireShip = new VampireShip(10, 1000, 30);
-		
+		vampireShip = new VampireShip(Random.int(15, 20), 1000, 50);
+		vampireShip.crewChanged.add(function(crew)
+		{
+			if (crew<=0)
+			{
+				gameOver();
+			}
+		});
+		vampireShip.goldChanged.add(function(gold)
+		{
+			if (gold<=0)
+			{
+				gameOver();
+			}
+		});
 		
 		
 		var formButtonsContainer = new Sprite();
@@ -207,12 +219,12 @@ class Main extends Sprite
 		indicatorsContainer.y = 404;
 		
 		
-		var crewIndicator = new ResourceIndicator("img/crew.png", vampireShip.crew);
+		var crewIndicator = new ResourceIndicator("img/crew.png", vampireShip.crew, "/"+vampireShip.maxCrew);
 		vampireShip.crewChanged.add(crewIndicator.setValue);
 		indicatorsContainer .addChild(crewIndicator);
 		crewIndicator.x = 20;
 		
-		var healthIndicator = new ResourceIndicator("img/heart.png", blackula.health);
+		var healthIndicator = new ResourceIndicator("img/heart.png", blackula.health, "%");
 		blackula.healthChanged.add(healthIndicator.setValue);
 		indicatorsContainer .addChild(healthIndicator);
 		healthIndicator.x = (Lib.current.stage.stageWidth - healthIndicator.width) / 2;

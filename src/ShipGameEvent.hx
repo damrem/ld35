@@ -133,20 +133,20 @@ class ShipGameEvent extends AbstractGameEvent
 		var damage:Int = 0;
 		var damageFactor:Float;
 		
-		plunderingFactor = (vampireShape.type == Swarm?1:0.25);
-		recruitmentFactor = (vampireShape.type == Vampire?0.25:0.1);
-		regenFactor = (vampireShape.type == Feral?1:0.25);
+		
+		recruitmentFactor = (vampireShape.type == Vampire?5:0);
+		regenFactor = (vampireShape.type == Feral?0.5:0.1);
 		
 		plunderedFactor = 0;
-		casualtiesFactor = 1 - victoryRatio;
-		damageFactor = 1 - victoryRatio;
+		casualtiesFactor = (1 - victoryRatio) * 2.5;
+		damageFactor = (1 - victoryRatio);
 		
 		var txtBattleResult = new Txt("", Main.ftLarge, false);
 		
 		if (victory)
 		{
 			trace("victory");
-			
+			plunderingFactor = (vampireShape.type == Swarm?1:0.25);
 			txtBattleResult.text = "You're victorious Cap'tain!";
 			
 		}
@@ -154,15 +154,15 @@ class ShipGameEvent extends AbstractGameEvent
 		{
 			trace("defeat");
 			
-			txtBattleResult.text = "Aaarh, you've been defeated...";
+			txtBattleResult.text = "Aaar, you've been defeated...";
 			
-			plunderingFactor /= 2;
+			plunderingFactor = 0;
 			recruitmentFactor /= 2;
 			regenFactor /= 2;
 			
 			plunderedFactor = 1 - victoryRatio;
-			casualtiesFactor = 1 - victoryRatio;
-			damageFactor = 1 - victoryRatio;
+			casualtiesFactor *= 5;
+			damageFactor *= 5;
 		}
 		
 		//txtResult.x = width - txtResult.width - 16;
@@ -172,19 +172,19 @@ class ShipGameEvent extends AbstractGameEvent
 		
 		
 		
-		recruitment = Std.int(Math.random() * crew *  recruitmentFactor);
+		recruitment = Std.int(Math.random() * recruitmentFactor);
 		if (recruitment > 0)
 		{
-			var txt = new Txt("You've converted " + recruitment + " into pirate ghul"+(recruitment>=2?"s":"")+".");
+			var txt = new Txt("You've converted " + recruitment + " good lad"+(recruitment>=2?"s":"")+" into "+(recruitment>=2?"":"one ")+"pirate ghul"+(recruitment>=2?"s":"")+".");
 			txt.y = txtHolder.height;
 			txt.width = 480;
 			txtHolder.addChild(txt);
 		}
 		
-		casualties = Std.int(Math.random() * (1 - victoryRatio) * 1 * casualtiesFactor);
+		casualties = Std.int(Math.random() * casualtiesFactor);
 		if (casualties > 0)
 		{
-			var txt = new Txt("Damn, you've lost " + casualties + " of your fidel pirate ghuls.");
+			var txt = new Txt("Damn, you've lost " + casualties + " of yer fidel pirate ghuls.");
 			txt.y = txtHolder.height;
 			txt.width = 480;
 			txtHolder.addChild(txt);
@@ -201,7 +201,7 @@ class ShipGameEvent extends AbstractGameEvent
 			txtHolder.addChild(txt);
 		}
 		
-		plundered = Std.int(Math.random() * (1 - victoryRatio) * 100 * plunderedFactor);
+		plundered = Std.int(Math.random() * 1000 * plunderedFactor);
 		if (plundered > 0)
 		{
 			var txt = new Txt("Ahoy, ye've been plundered "+ plundered+" pieces O' eight, ye sailing corpse.");
@@ -210,19 +210,19 @@ class ShipGameEvent extends AbstractGameEvent
 			txtHolder.addChild(txt);
 		}
 
-		regeration = Std.int(Math.random() * (100 - Main.blackula.health) * regenFactor);
+		regeration = Std.int(Math.random() * (Main.blackula.maxHealth - Main.blackula.health) * regenFactor);
 		if (regeration > 0)
 		{
-			var txt = new Txt("Handsomely fed mate, ye've regained "+ regeration+"% of yer bloody blood.");
+			var txt = new Txt("Handsomely fed mate, ye've regained "+ regeration+" gallon"+(regeration>=2?"s":"")+" of yer bloody blood.");
 			txt.y = txtHolder.height;
 			txt.width = 480;
 			txtHolder.addChild(txt);
 		}
 		
-		damage = Std.int(Math.random() * (1 - victoryRatio) * 10 * damageFactor);
+		damage = Std.int(Math.random() * 10 * damageFactor);
 		if (damage > 0)
 		{
-			var txt = new Txt("Take a caulk matey, ye've lost yerself "+ damage+"% of yer bloody blood.");
+			var txt = new Txt("Take a caulk matey, ye've lost yerself "+ damage+" gallon"+(regeration>=2?"s":"")+" of yer bloody blood.");
 			txt.y = txtHolder.height;
 			txt.width = 480;
 			txtHolder.addChild(txt);

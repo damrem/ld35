@@ -1,17 +1,11 @@
 package;
 
-import hxlpers.Rnd;
-import indicators.CrewIndicator;
-import indicators.HealthIndicator;
-import indicators.MoneyIndicator;
-import msignal.Signal;
 import openfl.Assets;
 import openfl.display.Sprite;
 import openfl.events.MouseEvent;
 import openfl.Lib;
-import openfl.text.Font;
-import openfl.text.TextField;
 import openfl.text.TextFormat;
+import ResourceIndicator;
 import src.GameEvent;
 //@:font("assets/fonts/PxPlus_AmstradPC1512.ttf") class DefaultFont extends Font { }
 /**
@@ -51,9 +45,9 @@ class Main extends Sprite
 		//Font.registerFont (DefaultFont);
 		
 		blackula = new Blackula();
-		blackula.healthChanged.add(function(health, isDead)
+		blackula.healthChanged.add(function(health)
 		{
-			if (isDead)
+			if (health<=0)
 			{
 				gameOver();
 			}
@@ -197,15 +191,18 @@ class Main extends Sprite
 		indicatorsContainer.y = 404;
 		
 		
-		var crewIndicator = new indicators.CrewIndicator();
+		var crewIndicator = new ResourceIndicator("img/crew.png", vampireShip.crew);
+		vampireShip.crewChanged.add(crewIndicator.setValue);
 		indicatorsContainer .addChild(crewIndicator);
 		crewIndicator.x = 20;
 		
-		var healthIndicator = new indicators.HealthIndicator();
+		var healthIndicator = new ResourceIndicator("img/heart.png", blackula.health);
+		blackula.healthChanged.add(healthIndicator.setValue);
 		indicatorsContainer .addChild(healthIndicator);
 		healthIndicator.x = (Lib.current.stage.stageWidth - healthIndicator.width) / 2;
 		
-		var moneyIndicator = new indicators.MoneyIndicator();
+		var moneyIndicator = new ResourceIndicator("img/gold.png", vampireShip.gold);
+		vampireShip.goldChanged.add(moneyIndicator.setValue);
 		indicatorsContainer .addChild(moneyIndicator);
 		moneyIndicator.x = Lib.current.stage.stageWidth - crewIndicator.width - 20;
 		

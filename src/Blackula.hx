@@ -11,12 +11,12 @@ class Blackula
 {
 	var _health:Int = 100;
 	public var health(get, set):Int;
-	public var healthChanged:Signal2<Int, Bool>;
+	public var healthChanged:Signal1<Int>;
 	var maxHealth:Int = 100;
 
 	public function new() 
 	{
-		healthChanged = new Signal2<Int, Bool>();
+		healthChanged = new Signal1<Int>();
 	}
 	
 	function get_health():Int 
@@ -27,7 +27,7 @@ class Blackula
 	function set_health(value:Int):Int 
 	{
 		_health = Mathematics.clamp(value, 0, maxHealth);
-		healthChanged.dispatch(_health, _health==0);
+		healthChanged.dispatch(_health);
 		return _health;
 	}
 	

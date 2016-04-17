@@ -69,9 +69,11 @@ class ShipGameEvent extends AbstractGameEvent
 		}
 		var crewTxt = new Txt("Crew is " + crewDescription+".", Main.ftSmall);
 		crewTxt.y = txtHolder.height;
+		crewTxt.width = 480;
 		txtHolder.addChild(crewTxt);
 		
 		var lootTxt = new Txt("Loot could reach " + gold + " pieces O' eight.", Main.ftSmall);
+		lootTxt.width = 480;
 		lootTxt.y = txtHolder.height;
 		
 		txtHolder.addChild(lootTxt);

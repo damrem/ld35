@@ -4,9 +4,10 @@ package;
  * @author damrem
  */
 
-typedef BlackulaShape =
+typedef BlackulaForm =
 {
-	var name:String;
+	var formName:String;
+	var type:BlackulaFormType;
 	var bonus:String;
 	
 	var bmp:String;
@@ -19,4 +20,11 @@ typedef BlackulaShape =
 	
 	var losingHealth:Float;
 	var gainingHealth:Float;
+}
+
+enum BlackulaFormType
+{
+	Vampire;
+	Feral;
+	Swarm;
 }

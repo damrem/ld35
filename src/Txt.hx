@@ -10,8 +10,12 @@ import openfl.text.TextFormat;
 class Txt extends TextField
 {
 
-	public function new(txt:String, ft:TextFormat, multi:Bool=true) 
+	public function new(txt:String, ?ft:TextFormat, multi:Bool=true) 
 	{
+		if (ft == null)
+		{
+			ft = Main.ftSmall;
+		}
 		super();
 		embedFonts = true;
 		autoSize = TextFieldAutoSize.LEFT;

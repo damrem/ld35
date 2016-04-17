@@ -34,6 +34,7 @@ class AbstractGameEvent extends Sprite
 		nameTxt.autoSize = TextFieldAutoSize.LEFT;
 		nameTxt.embedFonts = true;
 		nameTxt.defaultTextFormat = Main.ftHuge;
+		nameTxt.selectable = false;
 		nameTxt.text = eventName;
 		txtHolder.addChild(nameTxt);
 		
@@ -41,9 +42,11 @@ class AbstractGameEvent extends Sprite
 		typeTxt .embedFonts = true;
 		typeTxt.autoSize = TextFieldAutoSize.LEFT;
 		typeTxt.defaultTextFormat = Main.ftLarge;
+		typeTxt.selectable = false;
 		typeTxt.text = type;
 		txtHolder.addChild(typeTxt);
-		typeTxt.y = txtHolder.height;
+		typeTxt.x = nameTxt.width+8;
+		typeTxt.y = nameTxt.height-typeTxt.height;
 		
 		txtHolder.x = txtHolder.y = 16;
 	}
@@ -54,7 +57,7 @@ class AbstractGameEvent extends Sprite
 		addChild(txtHolder);
 	}
 	
-	public function resolve(vampireShape:BlackulaShape)
+	public function resolve(vampireShape:BlackulaForm)
 	{
 		
 	}

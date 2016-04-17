@@ -106,11 +106,11 @@ class ShipGameEvent extends AbstractGameEvent
 	}
 	
 	
-	override public function resolve(vampireShape:BlackulaShape)
+	override public function resolve(vampireShape:BlackulaForm)
 	{
 		var bonusedCrew:Float = Main.vampireShip.crew;
 		
-		if (vampireShape.name == "Feral Shape")
+		if (vampireShape.type == Feral)
 		{
 			bonusedCrew += 5;
 			trace("crew bonus +5");
@@ -133,28 +133,28 @@ class ShipGameEvent extends AbstractGameEvent
 		var damage:Int = 0;
 		var damageFactor:Float;
 		
-		plunderingFactor = (vampireShape.name == "Swarm Shape"?1:0.25);
-		recruitmentFactor = (vampireShape.name == "Vampire Shape"?0.25:0.1);
-		regenFactor = (vampireShape.name == "Feral Shape"?1:0.25);
+		plunderingFactor = (vampireShape.type == Swarm?1:0.25);
+		recruitmentFactor = (vampireShape.type == Vampire?0.25:0.1);
+		regenFactor = (vampireShape.type == Feral?1:0.25);
 		
 		plunderedFactor = 0;
 		casualtiesFactor = 1 - victoryRatio;
 		damageFactor = 1 - victoryRatio;
 		
-		var txtResult = new Txt("", Main.ftHuge, false);
+		var txtBattleResult = new Txt("", Main.ftLarge, false);
 		
 		if (victory)
 		{
 			trace("victory");
 			
-			txtResult.text = "You're victorious Cap'tain!";
+			txtBattleResult.text = "You're victorious Cap'tain!";
 			
 		}
 		else
 		{
 			trace("defeat");
 			
-			txtResult.text = "Aaarh, you've been defeated...";
+			txtBattleResult.text = "Aaarh, you've been defeated...";
 			
 			plunderingFactor /= 2;
 			recruitmentFactor /= 2;
@@ -165,17 +165,69 @@ class ShipGameEvent extends AbstractGameEvent
 			damageFactor = 1 - victoryRatio;
 		}
 		
-		txtResult.x = width - txtResult.width - 16;
-		txtResult.y = height - txtResult.height - 16;
-		addChild(txtResult);
+		//txtResult.x = width - txtResult.width - 16;
+		txtBattleResult.y = txtHolder.height;
+		txtHolder.addChild(txtBattleResult);
+		
+		
+		
+		
+		recruitment = Std.int(Math.random() * crew *  recruitmentFactor);
+		if (recruitment > 0)
+		{
+			var txt = new Txt("You've converted " + recruitment + " into pirate ghul"+(recruitment>=2?"s":"")+".");
+			txt.y = txtHolder.height;
+			txt.width = 480;
+			txtHolder.addChild(txt);
+		}
+		
+		casualties = Std.int(Math.random() * (1 - victoryRatio) * 1 * casualtiesFactor);
+		if (casualties > 0)
+		{
+			var txt = new Txt("Damn, you've lost " + casualties + " of your fidel pirate ghuls.");
+			txt.y = txtHolder.height;
+			txt.width = 480;
+			txtHolder.addChild(txt);
+		}
+		
+		
 		
 		plundering = Std.int(Math.random() * gold * plunderingFactor);
-		recruitment = Std.int(Math.random() * crew *  recruitmentFactor);
-		regeration = Std.int(Math.random() * (100 - Main.blackula.health) * regenFactor);
+		if (plundering > 0)
+		{
+			var txt = new Txt("Yo-ho-ho, ye've earned yerself a good loot of " + plundering+ " pieces O' eight!");
+			txt.y = txtHolder.height;
+			txt.width = 480;
+			txtHolder.addChild(txt);
+		}
 		
 		plundered = Std.int(Math.random() * (1 - victoryRatio) * 100 * plunderedFactor);
-		casualties = Std.int(Math.random() * (1 - victoryRatio) * 1*casualtiesFactor);
+		if (plundered > 0)
+		{
+			var txt = new Txt("Ahoy, ye've been plundered "+ plundered+" pieces O' eight, ye sailing corpse.");
+			txt.y = txtHolder.height;
+			txt.width = 480;
+			txtHolder.addChild(txt);
+		}
+
+		regeration = Std.int(Math.random() * (100 - Main.blackula.health) * regenFactor);
+		if (regeration > 0)
+		{
+			var txt = new Txt("Handsomely fed mate, ye've regained "+ regeration+"% of yer bloody blood.");
+			txt.y = txtHolder.height;
+			txt.width = 480;
+			txtHolder.addChild(txt);
+		}
+		
 		damage = Std.int(Math.random() * (1 - victoryRatio) * 10 * damageFactor);
+		if (damage > 0)
+		{
+			var txt = new Txt("Take a caulk matey, ye've lost yerself "+ damage+"% of yer bloody blood.");
+			txt.y = txtHolder.height;
+			txt.width = 480;
+			txtHolder.addChild(txt);
+		}
+		
 		
 		Main.blackula.health += (regeration - damage);
 		Main.vampireShip.crew += (recruitment - casualties);

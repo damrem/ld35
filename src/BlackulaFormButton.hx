@@ -13,15 +13,15 @@ import openfl.text.TextFieldAutoSize;
  * ...
  * @author damrem
  */
-class BlackulaShapeButton extends Sprite
+class BlackulaFormButton extends Sprite
 {
 	var txtName:openfl.text.TextField;
 	var txtHolder:openfl.display.Sprite;
-	public var blackulaShape:BlackulaShape;
-	public function new(blackulaShape:BlackulaShape) 
+	public var blackulaForm:BlackulaForm;
+	public function new(blackulaShape:BlackulaForm) 
 	{
 		super();
-		this.blackulaShape = blackulaShape;
+		this.blackulaForm = blackulaShape;
 		
 		buttonMode = useHandCursor = true;
 		mouseChildren = false;
@@ -37,7 +37,7 @@ class BlackulaShapeButton extends Sprite
 		txtName = new TextField();
 		txtName.selectable = false;
 		txtName.defaultTextFormat = Main.ftLarge;
-		txtName.text = blackulaShape.name;
+		txtName.text = blackulaShape.formName;
 		txtName.embedFonts = true;
 		txtName.autoSize = TextFieldAutoSize.LEFT;
 		

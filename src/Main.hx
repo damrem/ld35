@@ -38,9 +38,9 @@ class Main extends Sprite
 	
 	public static var eventDefs:Array<GameEvent>;
 	
-	public static var vampireShape:BlackulaShape;
-	public static var beastShape:BlackulaShape;
-	public static var swarmShape:BlackulaShape;
+	public static var vampireForm:BlackulaForm;
+	public static var beastForm:BlackulaForm;
+	public static var swarmForm:BlackulaForm;
 	public static var ftHuge:TextFormat;
 	
 	public function new() 
@@ -67,14 +67,15 @@ class Main extends Sprite
 		});
 		
 		gameEventFactory = new GameEventFactory();
-		ftLarge = new TextFormat(Assets.getFont("fonts/minya nouvelle bd.ttf").fontName, 16, 0xffffff);
+		ftLarge = new TextFormat(Assets.getFont("fonts/minya nouvelle bd.ttf").fontName, 19, 0xffffff);
 		ftHuge = new TextFormat(Assets.getFont("fonts/minya nouvelle bd.ttf").fontName, 24, 0xffffff);
-		ftSmall =new TextFormat(Assets.getFont("fonts/minya nouvelle rg.ttf").fontName, 12, 0xffffff);
+		ftSmall =new TextFormat(Assets.getFont("fonts/minya nouvelle rg.ttf").fontName, 14, 0xffffff);
 
 		gameEventHistory = [];
 		
-		vampireShape = {
-			name: "Vampire Shape",
+		vampireForm = {
+			formName: "Vampire Form",
+			type:Vampire,
 			bonus:"Increase your chance of converting enemy crew members into one of your pirate ghuls.",
 			bmp:"img/human.png",
 			losingMen:0.5,
@@ -85,8 +86,9 @@ class Main extends Sprite
 			gainingHealth:0.1
 		};
 		
-		beastShape = {
-			name: "Feral Shape",
+		beastForm = {
+			formName: "Feral Form",
+			type:Feral,
 			bonus:"You shark face will throw fear into the heart of your opponents. Their meat won't be that tender but might regenerate your life.",
 			bmp:"img/shark.png",
 			losingMen:0.25,
@@ -97,8 +99,9 @@ class Main extends Sprite
 			gainingHealth:0.25
 		};
 		
-		swarmShape = {
-			name: "Swarm Shape",
+		swarmForm = {
+			formName: "Swarm Form",
+			type:Swarm,
 			bonus:"Change into a swarm of rodents to plunder the assaulted ship pieces O' eight by pieces O' eight.",
 			bmp:"img/rats.png",
 			losingMen:0.75,
@@ -173,28 +176,28 @@ class Main extends Sprite
 		
 		
 		
-		var shapeButtonsContainer = new Sprite();
-		shapeButtonsContainer.y = 232;
-		addChild(shapeButtonsContainer);
+		var formButtonsContainer = new Sprite();
+		formButtonsContainer.y = 232;
+		addChild(formButtonsContainer);
 		
 		
-		vampireButton = new BlackulaShapeButton(vampireShape);
+		vampireButton = new BlackulaFormButton(vampireForm);
 		vampireButton.x = 0;
-		shapeButtonsContainer.addChild(vampireButton);
+		formButtonsContainer.addChild(vampireButton);
 		
-		beastButton = new BlackulaShapeButton(beastShape);
+		beastButton = new BlackulaFormButton(beastForm);
 		beastButton.x = 176;
-		shapeButtonsContainer.addChild(beastButton);
+		formButtonsContainer.addChild(beastButton);
 		
-		swarmButton = new BlackulaShapeButton(swarmShape);
+		swarmButton = new BlackulaFormButton(swarmForm);
 		swarmButton.x = 176*2;
-		shapeButtonsContainer.addChild(swarmButton);
+		formButtonsContainer.addChild(swarmButton);
 		
 		vampireButton.addText();
 		beastButton.addText();
 		swarmButton.addText();
 		
-		shapeButtonsContainer.x = (Lib.current.stage.stageWidth - shapeButtonsContainer.width) / 2;
+		formButtonsContainer.x = (Lib.current.stage.stageWidth - formButtonsContainer.width) / 2;
 		
 		
 		
@@ -278,7 +281,7 @@ class Main extends Sprite
 	
 	function transition(duration:Float=1.0, skip:Bool=false)
 	{
-		var delay = (gameEventHistory.length > 1 && !skip) ? 2.5 : 0;
+		var delay = (gameEventHistory.length > 1 && !skip) ? 60 : 0;
 		if (exitingGameEvent != null)
 		{
 			//Actuate.stop(exitingGameEvent);
@@ -312,9 +315,9 @@ class Main extends Sprite
 	{
 		trace("resolveCurrent");
 		pause();
-		var selectedShape:BlackulaShape = cast(evt.currentTarget, BlackulaShapeButton).blackulaShape;
+		var selectedForm:BlackulaForm = cast(evt.currentTarget, BlackulaFormButton).blackulaForm;
 		
-		currentEvent.resolve(selectedShape);
+		currentEvent.resolve(selectedForm);
 		
 		//Actuate.tween(currentEvent, 1, { x: -currentEvent.width } )
 		//.delay(2.5)

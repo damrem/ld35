@@ -7,6 +7,7 @@ package;
 typedef BlackulaShape =
 {
 	var name:String;
+	var bonus:String;
 	
 	var bmp:String;
 	

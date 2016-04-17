@@ -15,7 +15,10 @@ class Txt extends TextField
 		super();
 		embedFonts = true;
 		autoSize = TextFieldAutoSize.LEFT;
+		selectable = false;
 		defaultTextFormat = ft;
+		mouseEnabled = false;
+		wordWrap = multiline = true;
 		text = txt;
 	}
 	

@@ -41,7 +41,7 @@ class Main extends Sprite
 	
 	public static var vampireShape:BlackulaShape;
 	public static var beastShape:BlackulaShape;
-	public static var batShape:BlackulaShape;
+	public static var swarmShape:BlackulaShape;
 	public static var ftHuge:TextFormat;
 	
 	public function new() 
@@ -67,7 +67,8 @@ class Main extends Sprite
 		gameEventHistory = [];
 		
 		vampireShape = {
-			name: "Vampire Shape\n(Recruitment bonus)",
+			name: "Vampire Shape",
+			bonus:"Increase your chance of converting enemy crew members into one of your pirate ghuls.",
 			bmp:"img/human.png",
 			losingMen:0.5,
 			gainingMen:0.5,
@@ -78,7 +79,8 @@ class Main extends Sprite
 		};
 		
 		beastShape = {
-			name: "Feral Shape\n(Combat bonus)",
+			name: "Feral Shape",
+			bonus:"You shark face will throw fear into the heart of your opponents. Their meat won't be that tender but might regenerate your life.",
 			bmp:"img/shark.png",
 			losingMen:0.25,
 			gainingMen:0.25,
@@ -88,8 +90,9 @@ class Main extends Sprite
 			gainingHealth:0.25
 		};
 		
-		batShape = {
-			name: "Swarm Shape\n(Plunder bonus)",
+		swarmShape = {
+			name: "Swarm Shape",
+			bonus:"Change into a swarm of rodents to plunder the assaulted ship pieces O' eight by pieces O' eight.",
 			bmp:"img/rats.png",
 			losingMen:0.75,
 			gainingMen:0.0,
@@ -176,7 +179,7 @@ class Main extends Sprite
 		beastButton.x = 176;
 		shapeButtonsContainer.addChild(beastButton);
 		
-		swarmButton = new BlackulaShapeButton(batShape);
+		swarmButton = new BlackulaShapeButton(swarmShape);
 		swarmButton.x = 176*2;
 		shapeButtonsContainer.addChild(swarmButton);
 		

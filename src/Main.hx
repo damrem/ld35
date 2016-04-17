@@ -1,6 +1,9 @@
 package;
 
 import hxlpers.Rnd;
+import indicators.CrewIndicator;
+import indicators.HealthIndicator;
+import indicators.MoneyIndicator;
 import msignal.Signal;
 import openfl.Assets;
 import openfl.display.Sprite;
@@ -32,13 +35,14 @@ class Main extends Sprite
 	public static var ftLarge:TextFormat;
 	public static var ftSmall:TextFormat;
 
-	public static var vampireShip:Ship;
+	public static var vampireShip:VampireShip;
 	
 	public static var eventDefs:Array<GameEvent>;
 	
 	public static var vampireShape:BlackulaShape;
 	public static var beastShape:BlackulaShape;
 	public static var batShape:BlackulaShape;
+	public static var ftHuge:TextFormat;
 	
 	public function new() 
 	{
@@ -56,8 +60,9 @@ class Main extends Sprite
 		});
 		
 		gameEventFactory = new GameEventFactory();
-		ftLarge = new TextFormat(Assets.getFont("fonts/PxPlus_AmstradPC1512.ttf").fontName, 16, 0xffffff);
-		ftSmall =new TextFormat(Assets.getFont("fonts/PxPlus_AmstradPC1512.ttf").fontName, 8, 0xffffff);
+		ftLarge = new TextFormat(Assets.getFont("fonts/minya nouvelle bd.ttf").fontName, 16, 0xffffff);
+		ftHuge = new TextFormat(Assets.getFont("fonts/minya nouvelle bd.ttf").fontName, 24, 0xffffff);
+		ftSmall =new TextFormat(Assets.getFont("fonts/minya nouvelle rg.ttf").fontName, 12, 0xffffff);
 
 		gameEventHistory = [];
 		
@@ -154,7 +159,7 @@ class Main extends Sprite
 		// Assets:
 		// openfl.Assets.getBitmapData("img/assetname.jpg");
 		
-		
+		vampireShip = new VampireShip(10, 1000, 30);
 		nextEvent();
 		
 		
@@ -182,22 +187,22 @@ class Main extends Sprite
 		shapeButtonsContainer.x = (Lib.current.stage.stageWidth - shapeButtonsContainer.width) / 2;
 		
 		
-		vampireShip = new Ship("", "", 10, 1000, 30);
+		
 		
 		var indicatorsContainer = new Sprite();
 		addChild(indicatorsContainer);
 		indicatorsContainer.y = 404;
 		
 		
-		var crewIndicator = new CrewIndicator();
+		var crewIndicator = new indicators.CrewIndicator();
 		indicatorsContainer .addChild(crewIndicator);
 		crewIndicator.x = 20;
 		
-		var healthIndicator = new HealthIndicator();
+		var healthIndicator = new indicators.HealthIndicator();
 		indicatorsContainer .addChild(healthIndicator);
 		healthIndicator.x = (Lib.current.stage.stageWidth - healthIndicator.width) / 2;
 		
-		var moneyIndicator = new MoneyIndicator();
+		var moneyIndicator = new indicators.MoneyIndicator();
 		indicatorsContainer .addChild(moneyIndicator);
 		moneyIndicator.x = Lib.current.stage.stageWidth - crewIndicator.width - 20;
 		

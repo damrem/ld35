@@ -5,14 +5,14 @@ import hxlpers.Rnd;
 import msignal.Signal.Signal1;
 import openfl.Assets;
 import openfl.display.Bitmap;
+import openfl.text.TextField;
 using hxlpers.display.BitmapDataSF;
 /**
  * @author damrem
  */
 
-class Ship extends AbstractGameEvent
+class ShipGameEvent extends AbstractGameEvent
 {
-	var maxCrew:Int;
 	var _crew:Int;
 	public var crew(get, set):Int;
 	public var crewChanged:Signal1<Int>;
@@ -21,10 +21,9 @@ class Ship extends AbstractGameEvent
 	public var gold(get, set):Int;
 	public var goldChanged:Signal1<Int>;
 	
-	public function new(type:String, name:String, crew:Int, gold:Int, maxCrew:Int=30)
+	public function new(type:String, name:String, crew:Int, gold:Int)
 	{
 		super(type, name);
-		this.maxCrew = maxCrew;
 		goldChanged = new Signal1<Int>();
 		this.gold = gold;
 		crewChanged = new Signal1<Int>();
@@ -40,9 +39,42 @@ class Ship extends AbstractGameEvent
 		var scale = (0.75 + Math.random() * 0.25);
 		ship.scaleX = scale * (Rnd.chance()?1: -1);
 		ship.scaleY = scale;
-		ship.x = 112 + Math.random()*(256);
+		ship.x = 128 + Math.random()*(256);
 		ship.y = 48 + Std.random(12);
 		addChild(ship);
+		
+		addTxtHolder();
+		
+		var crewDescription:String;
+		var crewRatio = crew / Main.vampireShip.crew;
+		if (crewRatio < 0.5)
+		{
+			crewDescription = "very weak";
+		}
+		else if (crewRatio < 0.75)
+		{
+			crewDescription = "weak";
+		}
+		else if (crewRatio > 1.25)
+		{
+			crewDescription = "strong";
+		}
+		else if (crewRatio > 1.5)
+		{
+			crewDescription = "very strong";
+		}
+		else
+		{
+			crewDescription = "average";
+		}
+		var crewTxt = new Txt("Crew is " + crewDescription+".", Main.ftSmall);
+		crewTxt.y = txtHolder.height;
+		txtHolder.addChild(crewTxt);
+		
+		var lootTxt = new Txt("Loot could reach " + gold + " pieces O' eight.", Main.ftSmall);
+		lootTxt.y = txtHolder.height;
+		
+		txtHolder.addChild(lootTxt);
 	}
 	
 	function get_crew():Int 
@@ -52,7 +84,7 @@ class Ship extends AbstractGameEvent
 	
 	function set_crew(value:Int):Int 
 	{
-		_crew = Mathematics.clamp(value, 0, maxCrew);
+		_crew = value;
 		crewChanged.dispatch(_crew);
 		return _crew;
 	}

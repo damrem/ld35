@@ -1,4 +1,4 @@
-package;
+package indicators;
 import openfl.Assets;
 import openfl.display.Bitmap;
 import openfl.display.Sprite;
@@ -19,7 +19,7 @@ class CrewIndicator extends Sprite
 		txt = new TextField();
 		txt.embedFonts = true;
 		txt.selectable = false;
-		txt.defaultTextFormat = Main.ftLarge;
+		txt.defaultTextFormat = Main.ftHuge;
 		addChild(txt);
 		txt.y = 8;
 		txt.text = ""+Main.vampireShip.crew;

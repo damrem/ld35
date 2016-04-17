@@ -1,4 +1,4 @@
-package;
+package indicators;
 import openfl.Assets;
 import openfl.display.Bitmap;
 import openfl.display.Sprite;
@@ -8,7 +8,7 @@ import openfl.text.TextField;
  * ...
  * @author damrem
  */
-class HealthIndicator extends Sprite
+class MoneyIndicator extends Sprite
 {
 	public var txt:openfl.text.TextField;
 
@@ -18,18 +18,18 @@ class HealthIndicator extends Sprite
 		txt = new TextField();
 		txt.embedFonts = true;
 		txt.selectable = false;
-		txt.defaultTextFormat = Main.ftLarge;
+		txt.defaultTextFormat = Main.ftHuge;
 		addChild(txt);
+		txt.text = "" + Main.Main.vampireShip.gold;
 		txt.y = 8;
-		txt.text = "" + Main.blackula.health;
-		txt.setTextFormat(Main.ftLarge);
-		Main.blackula.healthChanged.add(function(health, isDead)
+		Main.vampireShip.goldChanged.add(function(gold)
 		{
-			txt.text = ""+health;
+			txt.text = ""+gold;
 		});
 		
-		var heart=addChild(new Bitmap(Assets.getBitmapData("img/heart.png")));
-		txt.x = heart.width;
+		var coins = new Bitmap(Assets.getBitmapData("img/gold.png"));
+		addChild(coins);
+		txt.x = coins.width;
 	}
 	
 	

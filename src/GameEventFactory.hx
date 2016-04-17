@@ -23,7 +23,7 @@ class GameEventFactory
 	{
 		if(Rnd.chance(1))
 		{
-			return new Ship(shipTypes[Std.random(shipTypes.length)], createShipName(), Random.int(3, 15), Random.int(0, 2500));
+			return new ShipGameEvent(shipTypes[Std.random(shipTypes.length)], createShipName(), Random.int(3, 15), Random.int(0, 2500));
 		}
 		else
 		{
@@ -47,7 +47,9 @@ class GameEventFactory
 			"Jolly",
 			"Sliding",
 			"Wet",
-			"Hungry"
+			"Hungry",
+			"Seven Seas",
+			"Deep Sea"
 		];
 		var names = [
 			"Maria",
@@ -62,7 +64,35 @@ class GameEventFactory
 			"Stallion",
 			"Scourge",
 			"Jack",
-			"Rogers"
+			"Rogers",
+			"Smartphone?!?",
+			"Traveller",
+			"Tomatoe",
+			"Pea",
+			"Carrot",
+			"Bunny",
+			"Fox",
+			"Condor",
+			"Eagle",
+			"Hawk",
+			"Warrior",
+			"Merchant",
+			"Muren",
+			"Snake",
+			"Cook",
+			"Shark",
+			"Octopus",
+			"Scoundrel",
+			"Squirrel",
+			"Explorer",
+			"Hunter",
+			"Hog",
+			"Pig",
+			"Boar",
+			"Turkey",
+			"Hen",
+			"Rooster",
+			"Chester"
 		];
 		
 		return "The " + prefixes[Std.random(prefixes.length)] + " " + names[Std.random(names.length)];

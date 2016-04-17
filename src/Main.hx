@@ -66,6 +66,8 @@ class Main extends Sprite
 	
 	function restart() 
 	{
+		Assets.getSound("sounds/start.wav").play();
+		
 		removeChildren();
 		
 		fullZone = new Sprite();
@@ -187,7 +189,7 @@ class Main extends Sprite
 		// Assets:
 		// openfl.Assets.getBitmapData("img/assetname.jpg");
 		
-		vampireShip = new VampireShip(Random.int(15, 20), 1000, 50);
+		vampireShip = new VampireShip(Random.int(15, 20), 0, 100);
 		vampireShip.crewChanged.add(function(crew)
 		{
 			if (crew<=0)
@@ -195,13 +197,14 @@ class Main extends Sprite
 				gameOver();
 			}
 		});
-		vampireShip.goldChanged.add(function(gold)
+		/*vampireShip.goldChanged.add(function(gold)
 		{
 			if (gold<=0)
 			{
 				gameOver();
 			}
 		});
+		*/
 		
 		
 		var formButtonsContainer = new Sprite();
@@ -233,6 +236,7 @@ class Main extends Sprite
 		var indicatorsContainer = new Sprite();
 		addChild(indicatorsContainer);
 		indicatorsContainer.y = 404;
+		indicatorsContainer.x = 32;
 		
 		
 		var crewIndicator = new ResourceIndicator("img/crew.png", vampireShip.crew, "/"+vampireShip.maxCrew);
@@ -248,7 +252,7 @@ class Main extends Sprite
 		var moneyIndicator = new ResourceIndicator("img/gold.png", vampireShip.gold);
 		vampireShip.goldChanged.add(moneyIndicator.setValue);
 		indicatorsContainer .addChild(moneyIndicator);
-		moneyIndicator.x = Lib.current.stage.stageWidth - crewIndicator.width - 20;
+		moneyIndicator.x = Lib.current.stage.stageWidth - crewIndicator.width - 24;
 		
 		addChild(fullZone);
 		nextEvent();
@@ -267,6 +271,11 @@ class Main extends Sprite
 		beastButton.addEventListener(MouseEvent.CLICK, resolveCurrentEvent);
 		swarmButton.addEventListener(MouseEvent.CLICK, resolveCurrentEvent);
 		
+		Actuate.tween([vampireButton, beastButton, swarmButton], 0.25, { alpha:1 } );
+		Actuate.tween(vampireButton, 0.25, { alpha:1 } );
+		Actuate.tween(beastButton, 0.25, { alpha:1 } );
+		Actuate.tween(swarmButton, 0.25, { alpha:1 } );
+		
 	}
 	
 	function pause()
@@ -278,6 +287,11 @@ class Main extends Sprite
 		vampireButton.mouseEnabled =
 		beastButton.mouseEnabled =
 		swarmButton.mouseEnabled = false;
+		
+		Actuate.tween([vampireButton, beastButton, swarmButton], 0.25, { alpha:0.25 } );
+		Actuate.tween(vampireButton, 0.25, { alpha:0.25 } );
+		Actuate.tween(beastButton, 0.25, { alpha:0.25 } );
+		Actuate.tween(swarmButton, 0.25, { alpha:0.25 } );
 		
 		fullZone.mouseEnabled = true;
 		//fullZone.addEventListener(MouseEvent.CLICK, skipTransition);
@@ -363,7 +377,7 @@ class Main extends Sprite
 	{
 		trace("gameOver");
 		removeChildren(0, numChildren - 1);
-		var go = new GameOverScreen();
+		var go = new GameOverScreen(vampireShip.gold);
 		addChild(go);
 		go.restarted.add(restart);
 		trace(go.parent, go.stage);

@@ -41,7 +41,7 @@ class AbstractGameEvent extends Sprite
 		typeTxt = new TextField();
 		typeTxt .embedFonts = true;
 		typeTxt.autoSize = TextFieldAutoSize.LEFT;
-		typeTxt.defaultTextFormat = Main.ftLarge;
+		typeTxt.defaultTextFormat = Main.ftSmall;
 		typeTxt.selectable = false;
 		typeTxt.text = type;
 		txtHolder.addChild(typeTxt);

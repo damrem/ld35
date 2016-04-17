@@ -1,12 +1,15 @@
 package;
 import flash.display.BitmapData;
-import haxe.Timer;
+import flash.display.Sprite;
 import hxlpers.Rnd;
+import motion.Actuate;
+import motion.easing.Linear;
 import msignal.Signal.Signal1;
 import openfl.Assets;
 import openfl.display.Bitmap;
-import openfl.Lib;
+import openfl.geom.ColorTransform;
 using hxlpers.display.BitmapDataSF;
+using hxlpers.display.SpriteSF;
 /**
  * @author damrem
  */
@@ -18,6 +21,7 @@ class ShipGameEvent extends AbstractGameEvent
 	public var crewChanged:Signal1<Int>;
 	
 	var _gold:Int;
+	var gfx:flash.display.Sprite;
 	public var gold(get, set):Int;
 	public var goldChanged:Signal1<Int>;
 	
@@ -31,19 +35,44 @@ class ShipGameEvent extends AbstractGameEvent
 		this.crew = crew;
 		
 		
+		gfx = new Sprite();
+		gfx.transform.colorTransform = new ColorTransform(1+Math.random()*0.5, 1+Math.random()*0.5, 1+Math.random()*0.5, 1, Math.random()*128, Math.random()*128, Math.random()*128);
+		addChild(gfx);
 		
-		addChild(new Bitmap(Assets.getBitmapData("img/sea.png")));
+		gfx.addChild(new Bitmap(Assets.getBitmapData("img/sea.png")));
+
+		
 		var stars = new BitmapData(512, 120, true, 0);
 		stars.simpleNoise(0.005, true, true);
-		(addChild(new Bitmap(stars))).alpha=0.33;
+		(gfx.addChild(new Bitmap(stars))).alpha = Math.random()/2;
 		
+		
+		
+		for (i in 0...Std.random(8))
+		{
+			var cloudMask = new Sprite();
+			cloudMask.rect(512, 120);
+			gfx.addChild(cloudMask);
+			var cloud = new Bitmap(Assets.getBitmapData("img/cloud.png"));
+			cloud.mask = cloudMask;
+			cloud.x = Math.random() * -512;
+			cloud.alpha = Math.random() / 10;
+			cloud.y = -64 + Math.random() * 256;
+			gfx.addChild(cloud);
+		}
+		
+		
+		var shipMask = new Sprite();
+		shipMask .rect(512, 192);
+		gfx.addChild(shipMask );
 		var ship = new Bitmap(Assets.getBitmapData("img/ship.png"));
+		ship.mask = shipMask;
 		var scale = (0.75 + Math.random() * 0.25);
 		ship.scaleX = scale * (Rnd.chance()?1: -1);
 		ship.scaleY = scale;
 		ship.x = 128 + Math.random()*(256);
 		ship.y = 48 + Std.random(12);
-		addChild(ship);
+		gfx.addChild(ship);
 		
 		addTxtHolder();
 		
@@ -108,6 +137,8 @@ class ShipGameEvent extends AbstractGameEvent
 	
 	override public function resolve(vampireShape:BlackulaForm)
 	{
+		
+		
 		var bonusedCrew:Float = Main.vampireShip.crew;
 		
 		if (vampireShape.type == Feral)
@@ -165,74 +196,87 @@ class ShipGameEvent extends AbstractGameEvent
 			damageFactor *= 5;
 		}
 		
-		//txtResult.x = width - txtResult.width - 16;
-		txtBattleResult.y = txtHolder.height;
-		txtHolder.addChild(txtBattleResult);
+		var sound = Assets.getSound("sounds/explosion" + Std.random(3) + ".wav");
+		sound.play();
 		
-		
-		
-		
-		recruitment = Std.int(Math.random() * recruitmentFactor);
-		if (recruitment > 0)
-		{
-			var txt = new Txt("You've converted " + recruitment + " good lad"+(recruitment>=2?"s":"")+" into "+(recruitment>=2?"":"one ")+"pirate ghul"+(recruitment>=2?"s":"")+".");
-			txt.y = txtHolder.height;
-			txt.width = 480;
-			txtHolder.addChild(txt);
-		}
-		
-		casualties = Std.int(Math.random() * casualtiesFactor);
-		if (casualties > 0)
-		{
-			var txt = new Txt("Damn, you've lost " + casualties + " of yer fidel pirate ghuls.");
-			txt.y = txtHolder.height;
-			txt.width = 480;
-			txtHolder.addChild(txt);
-		}
-		
-		
-		
-		plundering = Std.int(Math.random() * gold * plunderingFactor);
-		if (plundering > 0)
-		{
-			var txt = new Txt("Yo-ho-ho, ye've earned yerself a good loot of " + plundering+ " pieces O' eight!");
-			txt.y = txtHolder.height;
-			txt.width = 480;
-			txtHolder.addChild(txt);
-		}
-		
-		plundered = Std.int(Math.random() * 1000 * plunderedFactor);
-		if (plundered > 0)
-		{
-			var txt = new Txt("Ahoy, ye've been plundered "+ plundered+" pieces O' eight, ye sailing corpse.");
-			txt.y = txtHolder.height;
-			txt.width = 480;
-			txtHolder.addChild(txt);
-		}
-
-		regeration = Std.int(Math.random() * (Main.blackula.maxHealth - Main.blackula.health) * regenFactor);
-		if (regeration > 0)
-		{
-			var txt = new Txt("Handsomely fed mate, ye've regained "+ regeration+" gallon"+(regeration>=2?"s":"")+" of yer bloody blood.");
-			txt.y = txtHolder.height;
-			txt.width = 480;
-			txtHolder.addChild(txt);
-		}
-		
-		damage = Std.int(Math.random() * 10 * damageFactor);
-		if (damage > 0)
-		{
-			var txt = new Txt("Take a caulk matey, ye've lost yerself "+ damage+" gallon"+(regeration>=2?"s":"")+" of yer bloody blood.");
-			txt.y = txtHolder.height;
-			txt.width = 480;
-			txtHolder.addChild(txt);
-		}
-		
-		
-		Main.blackula.health += (regeration - damage);
-		Main.vampireShip.crew += (recruitment - casualties);
-		Main.vampireShip.gold += (plundering-plundered);
-		
+		Actuate
+		.tween(gfx, 0.15, { x:gfx.x - 8 + Math.random() * 16/*, y:gfx.y - 8 + Math.random() * 16*/ } )
+		.repeat(3)
+		.reverse()
+		.ease(Linear.easeNone)
+		.onComplete(function() {
+			
+			
+			//txtResult.x = width - txtResult.width - 16;
+			txtBattleResult.y = txtHolder.height;
+			txtHolder.addChild(txtBattleResult);
+			
+			
+			
+			
+			recruitment = Std.int(Math.random() * recruitmentFactor);
+			if (recruitment > 0)
+			{
+				var txt = new Txt("You've converted " + recruitment + " good lad"+(recruitment>=2?"s":"")+" into "+(recruitment>=2?"":"one ")+"pirate ghul"+(recruitment>=2?"s":"")+".");
+				txt.y = txtHolder.height;
+				txt.width = 480;
+				txtHolder.addChild(txt);
+			}
+			
+			casualties = Std.int(Math.random() * casualtiesFactor);
+			if (casualties > 0)
+			{
+				var txt = new Txt("Damn, you've lost " + casualties + " of yer fidel pirate ghuls.");
+				txt.y = txtHolder.height;
+				txt.width = 480;
+				txtHolder.addChild(txt);
+			}
+			
+			
+			
+			plundering = Std.int(Math.random() * gold * plunderingFactor);
+			if (plundering > 0)
+			{
+				var txt = new Txt("Yo-ho-ho, ye've earned yerself a good loot of " + plundering+ " pieces O' eight!");
+				txt.y = txtHolder.height;
+				txt.width = 480;
+				txtHolder.addChild(txt);
+			}
+			
+			plundered = Std.int(Math.random() * 1000 * plunderedFactor);
+			if (plundered > 0)
+			{
+				var txt = new Txt("Ahoy, ye've been plundered "+ plundered+" pieces O' eight, ye sailing corpse.");
+				txt.y = txtHolder.height;
+				txt.width = 480;
+				txtHolder.addChild(txt);
+			}
+	
+			regeration = Std.int(Math.random() * (Main.blackula.maxHealth - Main.blackula.health) * regenFactor);
+			if (regeration > 0)
+			{
+				var txt = new Txt("Handsomely fed mate, ye've regained "+ regeration+" gallon"+(regeration>=2?"s":"")+" of yer bloody blood.");
+				txt.y = txtHolder.height;
+				txt.width = 480;
+				txtHolder.addChild(txt);
+			}
+			
+			damage = Std.int(Math.random() * 10 * damageFactor);
+			if (damage > 0)
+			{
+				var txt = new Txt("Take a caulk matey, ye've lost yerself "+ damage+" gallon"+(regeration>=2?"s":"")+" of yer bloody blood.");
+				txt.y = txtHolder.height;
+				txt.width = 480;
+				txtHolder.addChild(txt);
+			}
+			
+			
+			Main.blackula.health += (regeration - damage);
+			Main.vampireShip.crew += (recruitment - casualties);
+			Main.vampireShip.gold += (plundering-plundered);
+			
+		})
+		;
 		
 		/*Timer.delay(function() {
 			oked.dispatch();

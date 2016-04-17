@@ -22,6 +22,8 @@ class IntroScreen extends Sprite
 		
 		restarted = new Signal0();
 		
+		addChild(new Bitmap(Assets.getBitmapData("img/intro.png")));
+		
 		var txtContainer = new Sprite();
 		txtContainer.x = txtContainer.y = 16;		
 		addChild(txtContainer);
@@ -35,9 +37,10 @@ class IntroScreen extends Sprite
 		trace(title.stage);
 		
 		var parags = [
-			new Txt("Ye've been a pirate Cap'tain for a while now, ye've sailed and plundered the 7 seas, ain't it?", Main.ftLarge),
-			new Txt("From now on, ye're a vampire as well. Don't ask me how nor why, I bloody don't know Cap'tain. The first of his kind fer sure, the 1st 'Vampirate' ever! Your ghul crew will be useful in defeating mortal pirates...", Main.ftLarge),
+			new Txt("Ye've been a pirate Cap'tain for a while now, ye've sailed and plundered the Seven Seas, ain't it?", Main.ftLarge),
+			new Txt("Ye still a pirate, but from now on, ye're a vampire as well. Don't ask me how nor why, I bloody don't know Cap'tain. The first of his kind fer sure, the first 'Vampirate' ever! Your ghul crew will be useful in defeating mortal pirates...", Main.ftLarge),
 			new Txt("Ye have to fulfill yer thirst for gold AND for blood now...", Main.ftLarge, true),
+			new Txt("Face your undead destiny, roam the Ocean and fight every nights!", Main.ftLarge, true),
 		];
 		
 		var fullZone = new Sprite();
@@ -62,9 +65,7 @@ class IntroScreen extends Sprite
 			//txtContainer.addChild(parag);
 		});
 		
-		addEventListener(Event.ADDED_TO_STAGE, function(evt:Event) {
-			trace("added to stage", evt);
-		});
+		
 	}
 	
 	function addRestartButton() 
@@ -73,7 +74,7 @@ class IntroScreen extends Sprite
 		var button = new Sprite(); 
 		button.addChild(new Bitmap(data));
 		button.x = 200;
-		button.y = 280;
+		button.y = 320;
 		addChild(button);
 		button.useHandCursor = button.buttonMode = true;
 		

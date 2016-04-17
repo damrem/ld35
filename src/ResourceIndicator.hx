@@ -29,7 +29,7 @@ class ResourceIndicator extends Sprite
 		txt = new Txt(initValue+suffix, Main.ftHuge);
 		value = initValue;
 		addChild(txt);
-		txt.y = 8;
+		//txt.x = 8;
 		//txt.text = ""+Main.vampireShip.crew;
 		
 		
@@ -37,7 +37,7 @@ class ResourceIndicator extends Sprite
 		
 		var icon = new Bitmap(Assets.getBitmapData(img));
 		addChild(icon);	
-		txt.x = icon.width;
+		txt.x = icon.width+8;
 		
 		
 	}
@@ -58,10 +58,10 @@ class ResourceIndicator extends Sprite
 	
 		deltaTxt.transform.colorTransform = new ColorTransform(delta < 0?1:0, delta < 0?0:1, 0);
 		deltaTxt.text = (delta > 0?"+":"") + delta;
-		deltaTxt.y = -8;
+		deltaTxt.y = -12;
 		deltaTxt.alpha = 1;
 		Actuate
-		.tween(deltaTxt, 5.0, { y: -16, alpha:0 } )
+		.tween(deltaTxt, 5.0, { y: -20, alpha:0 } )
 		.onComplete(function() {
 			removeChild(deltaTxt);
 		})

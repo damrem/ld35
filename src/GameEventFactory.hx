@@ -100,10 +100,23 @@ class GameEventFactory
 			"Villain",
 			"Heroic",
 			"Skunky",
-			"Spooky"
+			"Spooky",
+			"Snoring"
 			
 		];
 		var names = [
+			"Madame",
+			"Duchess",
+			"Empress",
+			"Fairy",
+			"Queen",
+			"Princess",
+			"Betty",
+			"Feather",
+			"Yggdrasil",
+			"Flower",
+			"Lotus",
+			"Orange",
 			"Mermaid",
 			"Harpy",
 			"Siren",

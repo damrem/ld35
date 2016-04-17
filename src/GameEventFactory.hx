@@ -49,7 +49,15 @@ class GameEventFactory
 			"Wet",
 			"Hungry",
 			"Seven Seas",
-			"Deep Sea"
+			"Deep Sea",
+			"Fringant",
+			"Inconsequent",
+			"Overwhelming",
+			"Touchy",
+			"So 17th",
+			"Late",
+			"Modern"
+			
 		];
 		var names = [
 			"Maria",
@@ -92,7 +100,13 @@ class GameEventFactory
 			"Turkey",
 			"Hen",
 			"Rooster",
-			"Chester"
+			"Chester",
+			"Lucy",
+			"Ellen",
+			"Danny",
+			"Lad",
+			"Boy",
+			"Poney"
 		];
 		
 		return "The " + prefixes[Std.random(prefixes.length)] + " " + names[Std.random(names.length)];

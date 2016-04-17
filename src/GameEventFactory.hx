@@ -23,7 +23,7 @@ class GameEventFactory
 	{
 		if(Rnd.chance(1))
 		{
-			return new ShipGameEvent(shipTypes[Std.random(shipTypes.length)], createShipName(), Random.int(3, 15), Random.int(0, 2500));
+			return new ShipGameEvent(shipTypes[Std.random(shipTypes.length)], createShipName(), Random.int(5, 40), Random.int(0, 2500));
 		}
 		else
 		{

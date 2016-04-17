@@ -1,11 +1,11 @@
 package;
-import de.polygonal.core.math.Mathematics;
 import flash.display.BitmapData;
+import haxe.Timer;
 import hxlpers.Rnd;
 import msignal.Signal.Signal1;
 import openfl.Assets;
 import openfl.display.Bitmap;
-import openfl.text.TextField;
+import openfl.Lib;
 using hxlpers.display.BitmapDataSF;
 /**
  * @author damrem
@@ -21,6 +21,7 @@ class ShipGameEvent extends AbstractGameEvent
 	public var gold(get, set):Int;
 	public var goldChanged:Signal1<Int>;
 	
+	
 	public function new(type:String, name:String, crew:Int, gold:Int)
 	{
 		super(type, name);
@@ -28,6 +29,7 @@ class ShipGameEvent extends AbstractGameEvent
 		this.gold = gold;
 		crewChanged = new Signal1<Int>();
 		this.crew = crew;
+		
 		
 		
 		addChild(new Bitmap(Assets.getBitmapData("img/sea.png")));
@@ -113,48 +115,76 @@ class ShipGameEvent extends AbstractGameEvent
 			bonusedCrew += 5;
 			trace("crew bonus +5");
 		}
-		else if (vampireShape.name == "Bat Shape")
-		{
-			bonusedCrew *= 1.5;
-			trace("crew bonus +50%");
-		}
 		
 		var victoryRatio = bonusedCrew / (bonusedCrew + crew);
 		trace("victoryRatio", victoryRatio);
 		var victory = Rnd.chance(victoryRatio);
 		
+		var plundering:Int = 0;
+		var plunderingFactor:Float;
+		var plundered:Int = 0;
+		var plunderedFactor:Float;
+		var recruitment:Int = 0;
+		var recruitmentFactor:Float;
+		var casualties:Int = 0;
+		var casualtiesFactor:Float;
+		var regeration:Int = 0;
+		var regenFactor:Float;
+		var damage:Int = 0;
+		var damageFactor:Float;
+		
+		plunderingFactor = (vampireShape.name == "Swarm Shape"?1:0.25);
+		recruitmentFactor = (vampireShape.name == "Vampire Shape"?0.25:0.1);
+		regenFactor = (vampireShape.name == "Feral Shape"?1:0.25);
+		
+		plunderedFactor = 0;
+		casualtiesFactor = 1 - victoryRatio;
+		damageFactor = 1 - victoryRatio;
+		
+		var txtResult = new Txt("", Main.ftHuge, false);
+		
 		if (victory)
 		{
 			trace("victory");
-			var gainedGold = Std.int(gold * victoryRatio);
-			Main.vampireShip.gold += gainedGold;
-			trace("gained " + gainedGold+" gold");
 			
-			if (vampireShape.name == "Human Shape")
-			{
-				var addedCrew = Std.int(crew * 0.25);
-				Main.vampireShip.crew += addedCrew;
-				trace("recruited " + addedCrew + " crew members");
-			}
+			txtResult.text = "You're victorious Cap'tain!";
+			
 		}
 		else
 		{
 			trace("defeat");
 			
-			var lostGold = Std.int(Main.vampireShip.gold * (1 - victoryRatio)/3);
-			Main.vampireShip.gold -= lostGold;
-			trace("lost " + lostGold + "gold");
+			txtResult.text = "Aaarh, you've been defeated...";
 			
-			var deadCrew = Std.int(Main.vampireShip.crew * (1 - victoryRatio)/3);
-			Main.vampireShip.crew -= deadCrew;
-			trace(deadCrew + " crew member are dead");
-
-			var damage = Std.int(victoryRatio * 10);
-			Main.blackula.health -= damage;
-			trace("took " + damage+" damage");
-
+			plunderingFactor /= 2;
+			recruitmentFactor /= 2;
+			regenFactor /= 2;
+			
+			plunderedFactor = 1 - victoryRatio;
+			casualtiesFactor = 1 - victoryRatio;
+			damageFactor = 1 - victoryRatio;
 		}
 		
+		txtResult.x = width - txtResult.width - 16;
+		txtResult.y = height - txtResult.height - 16;
+		addChild(txtResult);
+		
+		plundering = Std.int(Math.random() * gold * plunderingFactor);
+		recruitment = Std.int(Math.random() * crew *  recruitmentFactor);
+		regeration = Std.int(Math.random() * (100 - Main.blackula.health) * regenFactor);
+		
+		plundered = Std.int(Math.random() * (1 - victoryRatio) * 100 * plunderedFactor);
+		casualties = Std.int(Math.random() * (1 - victoryRatio) * 1*casualtiesFactor);
+		damage = Std.int(Math.random() * (1 - victoryRatio) * 10 * damageFactor);
+		
+		Main.blackula.health += (regeration - damage);
+		Main.vampireShip.crew += (recruitment - casualties);
+		Main.vampireShip.gold += (plundering-plundered);
+		
+		
+		/*Timer.delay(function() {
+			oked.dispatch();
+		}, 2500);*/
 		
 	}
 }

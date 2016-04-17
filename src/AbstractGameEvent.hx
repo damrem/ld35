@@ -1,4 +1,5 @@
 package;
+import msignal.Signal.Signal0;
 import openfl.display.Sprite;
 import openfl.text.TextField;
 import openfl.text.TextFieldAutoSize;
@@ -16,11 +17,16 @@ class AbstractGameEvent extends Sprite
 	var nameTxt:TextField;
 	var txtHolder:Sprite;
 	
+	public var oked:Signal0;
+	
 	public function new(type:String, eventName:String) 
 	{
 		super();	
 		this.type = type;
 		this.eventName = eventName;
+		
+		oked = new Signal0();
+		
 		
 		txtHolder = new Sprite();
 		

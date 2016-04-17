@@ -1,5 +1,7 @@
 package;
 
+import haxe.Timer;
+import motion.Actuate;
 import openfl.Assets;
 import openfl.display.Sprite;
 import openfl.events.MouseEvent;
@@ -7,7 +9,7 @@ import openfl.Lib;
 import openfl.text.TextFormat;
 import ResourceIndicator;
 import src.GameEvent;
-//@:font("assets/fonts/PxPlus_AmstradPC1512.ttf") class DefaultFont extends Font { }
+using hxlpers.display.SpriteSF;
 /**
  * ...
  * @author damrem
@@ -24,6 +26,9 @@ class Main extends Sprite
 	var swarmButton:openfl.display.Sprite;
 	var gameEventFactory:GameEventFactory;
 	var currentEvent:AbstractGameEvent;
+	var exitingGameEvent:AbstractGameEvent;
+	var gameEventHolders:Sprite;
+	var fullZone:Sprite;
 	public static var blackula:Blackula;
 	
 	public static var ftLarge:TextFormat;
@@ -43,6 +48,14 @@ class Main extends Sprite
 		super();
 		
 		//Font.registerFont (DefaultFont);
+		
+		fullZone = new Sprite();
+		fullZone.rect(Lib.current.stage.stageWidth, Lib.current.stage.stageHeight, 0);
+		fullZone.alpha = 0;
+		fullZone.addEventListener(MouseEvent.CLICK, skipTransition);
+		
+		gameEventHolders = new Sprite();
+		addChild(gameEventHolders);
 		
 		blackula = new Blackula();
 		blackula.healthChanged.add(function(health)
@@ -157,7 +170,7 @@ class Main extends Sprite
 		// openfl.Assets.getBitmapData("img/assetname.jpg");
 		
 		vampireShip = new VampireShip(10, 1000, 30);
-		nextEvent();
+		
 		
 		
 		var shapeButtonsContainer = new Sprite();
@@ -206,14 +219,38 @@ class Main extends Sprite
 		indicatorsContainer .addChild(moneyIndicator);
 		moneyIndicator.x = Lib.current.stage.stageWidth - crewIndicator.width - 20;
 		
-		resume();
+		addChild(fullZone);
+		nextEvent();
+		
 	}
 	
 	function resume()
 	{
+		fullZone.mouseEnabled = false;
+		//fullZone.removeEventListener(MouseEvent.CLICK, skipTransition);
+
+		vampireButton.mouseEnabled =
+		beastButton.mouseEnabled =
+		swarmButton.mouseEnabled = true;
+		
 		vampireButton.addEventListener(MouseEvent.CLICK, resolveCurrentEvent);
 		beastButton.addEventListener(MouseEvent.CLICK, resolveCurrentEvent);
 		swarmButton.addEventListener(MouseEvent.CLICK, resolveCurrentEvent);
+		
+	}
+	
+	function pause()
+	{
+		vampireButton.removeEventListener(MouseEvent.CLICK, resolveCurrentEvent);
+		beastButton.removeEventListener(MouseEvent.CLICK, resolveCurrentEvent);
+		swarmButton.removeEventListener(MouseEvent.CLICK, resolveCurrentEvent);
+		
+		vampireButton.mouseEnabled =
+		beastButton.mouseEnabled =
+		swarmButton.mouseEnabled = false;
+		
+		fullZone.mouseEnabled = true;
+		//fullZone.addEventListener(MouseEvent.CLICK, skipTransition);
 	}
 	
 	
@@ -221,81 +258,74 @@ class Main extends Sprite
 	{
 		trace("nextEvent");
 		
+		//resume();
+		exitingGameEvent=null;
+		
 		if (gameEventHistory.length > 0)
 		{
-			currentEvent = gameEventHistory[gameEventHistory.length - 1];
-			removeChild(currentEvent);
+			exitingGameEvent = gameEventHistory[gameEventHistory.length - 1];
 		}
 		
 		currentEvent = gameEventFactory.createGameEvent();// eventDefs[Std.random(eventDefs.length)];
-		currentEvent.x = 20;
+		currentEvent.x = Lib.current.stage.stageWidth;
 		currentEvent.y = 20;
 		gameEventHistory.push(currentEvent);
-		addChild(currentEvent);
+		gameEventHolders.addChild(currentEvent);
 		
+		transition();
 		
+	}
+	
+	function transition(duration:Float=1.0, skip:Bool=false)
+	{
+		var delay = (gameEventHistory.length > 1 && !skip) ? 2.5 : 0;
+		if (exitingGameEvent != null)
+		{
+			//Actuate.stop(exitingGameEvent);
+			Actuate.tween(exitingGameEvent, duration, { x: -exitingGameEvent.width } )
+			.delay(delay)
+			.onComplete(function() {
+				if (exitingGameEvent.parent == gameEventHolders)
+				{
+					gameEventHolders.removeChild(exitingGameEvent);
+				}
+			})
+			;
+		}
+		if (currentEvent != null)
+		{
+			//Actuate.stop(currentEvent);
+			Actuate.tween(currentEvent, duration, { x:20 } )
+			.delay(delay)
+			.onComplete(resume)
+			;
+		}
+	}
+	
+	function skipTransition(evt:MouseEvent = null)
+	{
+		//Actuate.stop(currentEvent);
+		transition(0.1, true);
 	}
 	
 	function resolveCurrentEvent(evt:MouseEvent=null)
 	{
 		trace("resolveCurrent");
+		pause();
 		var selectedShape:BlackulaShape = cast(evt.currentTarget, BlackulaShapeButton).blackulaShape;
 		
 		currentEvent.resolve(selectedShape);
 		
-		/*if (Rnd.chance(vampireShape.losingMen))
-		{
-			vampireShip.crew += Random.int(-currentEvent.maxLosingMen, 0);
-		}
-		if (Rnd.chance(vampireShape.gainingMen))
-		{
-			vampireShip.crew += Random.int(0, currentEvent.maxGainingMen);
-		}
-		
-		
-	
-		
-		
-		if (Rnd.chance(vampireShape.losingHealth))
-		{
-			health+=Random.int(-currentEvent.maxLosingHealth, 0);			
-		}
-		if (Rnd.chance(vampireShape.gainingHealth))
-		{
-			health+=Random.int(0, currentEvent.maxGainingHealth);			
-		}
-		if (health <= 0)
-		{
-			health = 0;
-			gameOver();
-		}
-		else if (health > 100)
-		{
-			health = 100;
-		}
-		healthChanged.dispatch();
-	
-		
-		
-		
-		if (Rnd.chance(vampireShape.losingMoney))
-		{
-			vampireShip.gold += Random.int( -currentEvent.maxLosingMoney, 0);
-		}
-		if (Rnd.chance(vampireShape.gainingMoney))
-		{
-			vampireShip.gold += Random.int( 0, currentEvent.maxGainingMoney);
-		}
-		if (vampireShip.gold <= 0)
-		{
-			gameOver();
-		}
-		
-		*/
-		
-		
+		//Actuate.tween(currentEvent, 1, { x: -currentEvent.width } )
+		//.delay(2.5)
+		//.onComplete(nextEvent)
+		//;
 		
 		nextEvent();
+		
+		//currentEvent.oked.add(nextEvent);
+		
+		
 		
 	}
 	

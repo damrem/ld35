@@ -10,7 +10,7 @@ import openfl.text.TextFormat;
 class Txt extends TextField
 {
 
-	public function new(txt:String, ft:TextFormat) 
+	public function new(txt:String, ft:TextFormat, multi:Bool=true) 
 	{
 		super();
 		embedFonts = true;
@@ -18,7 +18,7 @@ class Txt extends TextField
 		selectable = false;
 		defaultTextFormat = ft;
 		mouseEnabled = false;
-		wordWrap = multiline = true;
+		wordWrap = multiline = multi;
 		text = txt;
 	}
 	
